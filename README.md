@@ -1,2 +1,2 @@
-This is a website implemented by JAVA VAADIN 8
+This is a website implemented by Java Vaadin 8
 
