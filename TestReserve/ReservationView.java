@@ -29,37 +29,37 @@ public class ReservationView extends VerticalLayout implements View {
 	//Components
 	Label logo=new Label("University of Missouri");
 	Label DAT = new Label("Date & Time");
-	
+
 	TextField booking=new TextField("Booking");
 	TextField cName=new TextField("Custormer Name");
 	TextField dates=new TextField("Dates");
 	TextField nPhone=new TextField("Phone Number");
-	
+
 	Tree<String> room = new Tree<>();
 	TreeData<String> roomData = new TreeData<>();
 	TreeDataProvider inMemoryDataProvider = new TreeDataProvider<>(roomData);
-	
+
 	DateTimeField sDate = new DateTimeField("Start Time", LocalDateTime.now());
 	DateTimeField eDate = new DateTimeField("End Time", LocalDateTime.now());
-	
+
 	Button button=new Button("Search");
 	Button nStep=new Button("Next Step");
-	
+
 	FormLayout form1=new FormLayout();
 	FormLayout form2=new FormLayout();
-	
+
 	GridLayout grid=new GridLayout(2,6);
-	
+
 	MenuBar barmenu=new MenuBar();
-	
+
 	ComboBox<String> select=new ComboBox<>("Create booking in this time zone");
 	//Global Variable
 	List<String> zone=new ArrayList<>();
-	
+
 	public ReservationView() {
 		init();
 	}
-	
+
 	public void init() {
 		dataProcess();
 		eventProcess();
@@ -74,16 +74,16 @@ public class ReservationView extends VerticalLayout implements View {
 		layout2.setSizeFull();
 		layout2.setComponentAlignment(nStep, Alignment.MIDDLE_RIGHT);
 		//third layer
-		
+
 		//forth layer
 		final HorizontalLayout layout3=new HorizontalLayout();
 		layout3.addComponents(grid,room);
 		layout3.setSizeFull();
-		
+
 		addComponents(layout1, layout2,layout3);	
-		
+
 	}
-	
+
 	private void dataProcess() {
 		//barmenu
 		MenuItem name=barmenu.addItem("Test",null,null);
@@ -109,21 +109,23 @@ public class ReservationView extends VerticalLayout implements View {
 		zone.add("Central Time");
 		zone.add("Pacific Time");
 		zone.add("East Time");
+		//select
+		select.setItems(zone);
+		select.setSelectedItem("Central Time");
+		select.setEmptySelectionAllowed(false);
 		//form1
 		form1.addComponents(booking,cName);
 		form2.addComponents(dates,nPhone);
-		//select
-		select.setItems(zone);
 	}
-	
+
 	private void eventProcess() {
 		button.addClickListener(e->{
 			room.setVisible(true);
 		});
-		
+
 		nStep.addClickListener(e->{
 			MyUI.navigateTo("details");
 		});
 	}
-	
+
 }
