@@ -5,7 +5,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewProvider;
 
-import muop.missouri.edu.contracts.login.LoginView;
+import raymond.Login.LoginView;
 import raymond.TestDetails.*;
 import raymond.TestHomePage.*;
 import raymond.TestReserve.*;
