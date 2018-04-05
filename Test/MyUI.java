@@ -32,7 +32,7 @@ public class MyUI extends UI {
     	navigator = new Navigator(this, layout);
     	setNavigator(navigator);
 		navigator.addProvider(new RaymondNavigatorViewProvider());
-		navigator.navigateTo("home"); 
+		navigator.navigateTo("login"); 
         setContent(layout);  
     }
 	

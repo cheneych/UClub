@@ -6,6 +6,8 @@ package raymond.Test;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
