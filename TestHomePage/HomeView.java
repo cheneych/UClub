@@ -1,7 +1,11 @@
 package raymond.TestHomePage;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.vaadin.icons.VaadinIcons;
@@ -17,6 +21,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
 
 import raymond.Test.*;
+import raymond.TestDetails.Items;
 
 @SuppressWarnings("serial")
 public class HomeView extends VerticalLayout implements View {
@@ -31,9 +36,8 @@ public class HomeView extends VerticalLayout implements View {
 	
 	DateField date = new DateField();
 	//global variable
-	Order order=new Order();
 	Grid<Order> grid=new Grid<>(Order.class);
-	List<Order> orders = new ArrayList<>();
+	public List<Order> orders=new ArrayList<>();
 	
 	public HomeView() {
 		init();
@@ -67,15 +71,25 @@ public class HomeView extends VerticalLayout implements View {
 		reserve.addClickListener(e->{
 			MyUI.navigateTo("reservation"); 
 		});
+		
+		date.addValueChangeListener(e->{
+			List<Order> newOrders=new ArrayList<>();
+			String s=e.getValue().toString();
+			for (Order o:orders) {
+				if (o.getDate().equals(s)) {
+					newOrders.add(o);
+				}
+			}
+			grid.setItems(newOrders);
+		});
+		
 	}
 
 	private void dataProcess() {
 		//order
-		order.setStartTime("14:00");
-		order.setEndTime("15:00");
-		order.setDes("Ball");
-		order.setRoom("Great Room 202");
-		order.setStatus(OrderStatus.Comfirmed);
+		orders.add(new Order("2018-04-01","14:00","15:00","Ball","Great Room 202",OrderStatus.Comfirmed));
+		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
+		orders.add(new Order("2018-03-27","8:00","11:00","Show","Jesse Hall",OrderStatus.Comfirmed));
 		//menubar
 		MenuItem name=barmenu.addItem("Test",null,null);
 		name.setIcon(VaadinIcons.USER);
@@ -84,7 +98,6 @@ public class HomeView extends VerticalLayout implements View {
 		//grid
 		grid.setColumns("startTime","endTime","des","room","status");
 		grid.setSizeFull();
-		orders.add(order);
 		grid.setItems(orders);
 		//date
 		date.setValue(LocalDate.now());

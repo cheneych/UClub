@@ -1,4 +1,4 @@
-package sq452o6q;
+package raymond.sq452o6q;
 
 import java.sql.*;
 import java.util.*;

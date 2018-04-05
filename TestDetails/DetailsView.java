@@ -10,6 +10,7 @@ import java.util.List;
 import com.vaadin.data.Binder;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -25,6 +26,7 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
+import raymond.TestHomePage.*;
 
 
 public class DetailsView extends VerticalLayout implements View {
@@ -41,6 +43,7 @@ public class DetailsView extends VerticalLayout implements View {
 
 	Button viewall=new Button("View All");
 	Button comfirm=new Button("Comfirm");
+	Button finish=new Button("Finish");
 
 	ComboBox<String> cato=new ComboBox<>("Catogory");
 	ComboBox<String> serv=new ComboBox<>("service Description");
@@ -95,7 +98,8 @@ public class DetailsView extends VerticalLayout implements View {
 
 		//forth layer
 		final VerticalLayout layout3=new VerticalLayout();
-		layout3.addComponents(itemGrid,comfirm,form);
+		layout3.addComponents(finish,itemGrid,comfirm,form);
+		layout3.setComponentAlignment(finish, Alignment.TOP_RIGHT);
 		layout3.setComponentAlignment(itemGrid, Alignment.TOP_RIGHT);
 		layout3.setComponentAlignment(comfirm, Alignment.TOP_RIGHT);
 		layout3.setComponentAlignment(form, Alignment.TOP_RIGHT);
@@ -205,16 +209,23 @@ public class DetailsView extends VerticalLayout implements View {
 			itemGrid.setVisible(true);
 			comfirm.setVisible(true);
 			listGrid.setVisible(false);
+			form2.setVisible(false);
 		});
 		//comfirm
 		comfirm.addClickListener(e->{
 			itemCBG.setVisible(false);
 			itemGrid.setVisible(false);
+			System.out.println(itemCBG.getSelectedItems().size());
+			if (itemCBG.getSelectedItems().size()>0)
+				lists.add(new Lists(cato.getValue(),serv.getValue(),sDate.getValue(),eDate.getValue(),listnxt++));
+			itemCBG.deselectAll();
+			
+			listGrid.setVisible(true);
+			listGrid.setItems(lists);
+			
 			comfirm.setVisible(false);
 			form.setVisible(false);
-			listGrid.setVisible(true);
-			lists.add(new Lists(cato.getValue(),serv.getValue(),sDate.getValue(),eDate.getValue(),listnxt++));
-			listGrid.setItems(lists);
+			
 			itemsAll.clear();
 			itemList.clear();
 			update();
@@ -272,5 +283,14 @@ public class DetailsView extends VerticalLayout implements View {
 			itemCBG.setVisible(false);
 		});
 		
+		finish.addClickListener(e->{
+			
+		});
+		
+	}
+	
+	@Override
+	public void enter(ViewChangeEvent event) {
+		System.err.println(event.getParameters());		
 	}
 }

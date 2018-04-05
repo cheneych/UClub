@@ -39,6 +39,10 @@ public class MyUI extends UI {
 	public static void navigateTo(String viewName) {
 		UI.getCurrent().getNavigator().navigateTo(viewName);
 	}
+	
+	public static void navigateTo(String viewName, String uriFragment) {
+		UI.getCurrent().getNavigator().navigateTo(viewName+"/"+uriFragment);
+	}
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)

@@ -8,6 +8,7 @@ import com.vaadin.data.TreeData;
 import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -124,7 +125,7 @@ public class ReservationView extends VerticalLayout implements View {
 		});
 
 		nStep.addClickListener(e->{
-			MyUI.navigateTo("details");
+			MyUI.navigateTo("details","test");
 		});
 	}
 

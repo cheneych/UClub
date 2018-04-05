@@ -1,11 +1,31 @@
 package raymond.TestHomePage;
 
+import java.util.Date;
+
 public class Order {
+	private String day;
 	private String startTime;
 	private String endTime;
 	private String des;
 	private String room;
 	private OrderStatus status;
+	
+	public Order(String day,String startTime,String endTime,String des,String room,OrderStatus status) {
+		this.day=day;
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.des=des;
+		this.room=room;
+		this.status=status;
+	}
+	
+	public String getDate() {
+		return day;
+	}
+	
+	public void setDate(String day) {
+		this.day=day;
+	}
 	
 	public String getStartTime(){
 		return startTime;
