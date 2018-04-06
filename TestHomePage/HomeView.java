@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.ui.Alignment;
@@ -24,15 +25,14 @@ import raymond.Test.*;
 import raymond.TestDetails.Items;
 
 @SuppressWarnings("serial")
-public class HomeView extends VerticalLayout implements View {
+@Theme("mytheme")
+//public class HomeView extends VerticalLayout implements View {
+public class HomeView extends TopBarView implements View {
 	//Components
 	private Button reserve=new Button("Reservation");
 	private Button home=new Button("HOME");
 
-	Label logo=new Label("University of Missouri");
 	Label pstbkg=new Label("Past Bookings");
-	
-	MenuBar barmenu=new MenuBar();
 	
 	DateField date = new DateField();
 	//global variable
@@ -47,10 +47,6 @@ public class HomeView extends VerticalLayout implements View {
 		eventProcess();
 		dataProcess();
 		//first layer
-		final HorizontalLayout layout1=new HorizontalLayout(); 
-		layout1.addComponents(logo,barmenu);
-		layout1.setSizeFull();
-		layout1.setComponentAlignment(barmenu, Alignment.TOP_RIGHT);
 		//second layer
 		final HorizontalLayout layout2=new HorizontalLayout(); 
 		final VerticalLayout layout3 = new VerticalLayout();
@@ -60,7 +56,7 @@ public class HomeView extends VerticalLayout implements View {
 		layout2.setSizeFull();
 		layout2.addComponents(layout3,layout4);
 
-		addComponents(layout1,layout2);
+		addComponents(layout2);
 	}
 
 	private void eventProcess(){
@@ -90,11 +86,6 @@ public class HomeView extends VerticalLayout implements View {
 		orders.add(new Order("2018-04-01","14:00","15:00","Ball","Great Room 202",OrderStatus.Comfirmed));
 		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
 		orders.add(new Order("2018-03-27","8:00","11:00","Show","Jesse Hall",OrderStatus.Comfirmed));
-		//menubar
-		MenuItem name=barmenu.addItem("Test",null,null);
-		name.setIcon(VaadinIcons.USER);
-		MenuItem account1=name.addItem("My Account",null,null);
-		MenuItem signout1=name.addItem("Sign Out",null,null);
 		//grid
 		grid.setColumns("startTime","endTime","des","room","status");
 		grid.setSizeFull();

@@ -26,15 +26,17 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
+
+import raymond.Test.MyUI;
+import raymond.Test.TopBarView;
 import raymond.TestHomePage.*;
 
 
-public class DetailsView extends VerticalLayout implements View {
+public class DetailsView extends TopBarView implements View {
 	//Components
 	public Grid<Lists> listGrid=new Grid<>(Lists.class);
 	public Grid<Items> itemGrid=new Grid<>(Items.class);
 
-	Label logo=new Label("University of Missouri");
 	Label resDtl=new Label("Reservation Details");
 	Label booking=new Label("Booking Name");
 
@@ -47,8 +49,6 @@ public class DetailsView extends VerticalLayout implements View {
 
 	ComboBox<String> cato=new ComboBox<>("Catogory");
 	ComboBox<String> serv=new ComboBox<>("service Description");
-
-	MenuBar barmenu=new MenuBar();
 
 	GridLayout grid=new GridLayout(3,4);
 
@@ -88,10 +88,6 @@ public class DetailsView extends VerticalLayout implements View {
 		dataProcess();
 		eventProcess();
 		//first layer
-		final HorizontalLayout layout1=new HorizontalLayout(); 
-		layout1.addComponents(logo,barmenu);
-		layout1.setSizeFull();
-		layout1.setComponentAlignment(barmenu, Alignment.TOP_RIGHT);
 		//second layer
 
 		//thirds layer
@@ -110,7 +106,7 @@ public class DetailsView extends VerticalLayout implements View {
 		layout4.setComponentAlignment(itemCBG, Alignment.TOP_CENTER);
 		//fifth layer
 
-		addComponents(layout1,resDtl,layout4,listGrid,form2);
+		addComponents(resDtl,layout4,listGrid,form2);
 	}
 	public void update() {
 		itemGrid.setItems(itemsAll);
@@ -118,10 +114,6 @@ public class DetailsView extends VerticalLayout implements View {
 
 	private void dataProcess() {
 		//barmenu
-		MenuItem name=barmenu.addItem("Test",null,null);
-		name.setIcon(VaadinIcons.USER);
-		MenuItem account1=name.addItem("My Account",null,null);
-		MenuItem signout1=name.addItem("Sign Out",null,null);
 		//grid
 		grid.addComponent(booking, 0,0,2,0);
 		grid.addComponent(cato,0,1);
@@ -284,7 +276,7 @@ public class DetailsView extends VerticalLayout implements View {
 		});
 		
 		finish.addClickListener(e->{
-			
+			MyUI.navigateTo("home");
 		});
 		
 	}

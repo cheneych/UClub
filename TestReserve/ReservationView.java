@@ -24,11 +24,11 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
 
 import raymond.Test.MyUI;
+import raymond.Test.TopBarView;
 
 @SuppressWarnings("serial")
-public class ReservationView extends VerticalLayout implements View {
+public class ReservationView extends TopBarView implements View {
 	//Components
-	Label logo=new Label("University of Missouri");
 	Label DAT = new Label("Date & Time");
 
 	TextField booking=new TextField("Booking");
@@ -51,8 +51,6 @@ public class ReservationView extends VerticalLayout implements View {
 
 	GridLayout grid=new GridLayout(2,6);
 
-	MenuBar barmenu=new MenuBar();
-
 	ComboBox<String> select=new ComboBox<>("Create booking in this time zone");
 	//Global Variable
 	List<String> zone=new ArrayList<>();
@@ -65,10 +63,6 @@ public class ReservationView extends VerticalLayout implements View {
 		dataProcess();
 		eventProcess();
 		//first layer
-		final HorizontalLayout layout1=new HorizontalLayout(); 
-		layout1.addComponents(logo,barmenu);
-		layout1.setSizeFull();
-		layout1.setComponentAlignment(barmenu, Alignment.TOP_RIGHT);
 		//second layer
 		final HorizontalLayout layout2=new HorizontalLayout();
 		layout2.addComponents(form1,form2,nStep);
@@ -81,16 +75,11 @@ public class ReservationView extends VerticalLayout implements View {
 		layout3.addComponents(grid,room);
 		layout3.setSizeFull();
 
-		addComponents(layout1, layout2,layout3);	
+		addComponents(layout2,layout3);	
 
 	}
 
 	private void dataProcess() {
-		//barmenu
-		MenuItem name=barmenu.addItem("Test",null,null);
-		name.setIcon(VaadinIcons.USER);
-		MenuItem account1=name.addItem("My Account",null,null);
-		MenuItem signout1=name.addItem("Sign Out",null,null);
 		//room
 		room.setVisible(false);
 		roomData.addItem(null,"Ball Room");

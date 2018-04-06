@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.vaadin.annotations.Theme;
 //import com.google.gwt.aria.client.Roles;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
@@ -35,6 +36,7 @@ import com.vaadin.ui.VerticalLayout;
 //import muop.missouri.edu.contracts.ui.desktop.TopBarView;
 
 import raymond.Test.MyUI;
+import raymond.Test.TopBarView;
 import raymond.Test.User;
 import raymond.Test.User.UserAttribute;
 
@@ -42,7 +44,9 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 @SuppressWarnings("serial")
-public class LoginView extends VerticalLayout implements View {
+@Theme("mytheme")
+//public class LoginView extends VerticalLayout implements View {
+public class LoginView extends TopBarView implements View {
 	private TextField userName;
 	private PasswordField password;
 	private Button loginButton;
@@ -71,7 +75,7 @@ public class LoginView extends VerticalLayout implements View {
 		
 		User.setUser(null);
 		
-		screendescription = new Label("<h2>Welcome to University of Missouri Contract System!</h2>",
+		screendescription = new Label("<h2>Welcome to University Club System!</h2>",
 				com.vaadin.shared.ui.ContentMode.HTML);
 	
 
@@ -116,7 +120,7 @@ public class LoginView extends VerticalLayout implements View {
 
 		label_warning.addStyleName("loginwarning");
 
-		String text = "Copyright @ 2016 - Curators of " + "<a href='http://missouri.edu//'>" + "University of Missouri"
+		String text = "Copyright @ 2018 - Curators of " + "<a href='http://missouri.edu//'>" + "University of Missouri"
 				+ "</a>" + ". All rights reserved. " + "<a href='http://www.umsystem.edu/ums/copyright/'>" + "DMCA"
 				+ "</a>" + " and other " + "<a href='http://missouri.edu/statements/copyright.php/'>"
 				+ "copyright information" + "</a>" + "\n" + ". " + "An "
