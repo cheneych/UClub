@@ -93,8 +93,8 @@ public abstract class TopBarView extends VerticalLayout implements View {
 		barmenu = new MenuBar();
 		MenuItem name=barmenu.addItem("Raymond",null,null);
 		name.setIcon(VaadinIcons.USER);
-		MenuItem account1=name.addItem("contactus",new ThemeResource("icons/PNG/Help/Help_16x16.png"),null);
-		MenuItem signout1=name.addItem("logout",new ThemeResource("icons/PNG/Qing/Sign_Out.png"),null);
+		MenuItem account1=name.addItem("Contact us",new ThemeResource("icons/PNG/Help/Help_16x16.png"),null);
+		MenuItem signout1=name.addItem("Logout",new ThemeResource("icons/PNG/Qing/Sign_Out.png"),null);
 		
 //		logout = new Button("Log Out") {
 //			{

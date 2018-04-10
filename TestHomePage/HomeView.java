@@ -18,6 +18,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
 
@@ -29,8 +30,11 @@ import raymond.TestDetails.Items;
 //public class HomeView extends VerticalLayout implements View {
 public class HomeView extends TopBarView implements View {
 	//Components
-	private Button reserve=new Button("Reservation");
+	private Button reserve=new Button("Create a new Reservation");
 	private Button home=new Button("HOME");
+
+	TextField member=new TextField("member #");
+	//TextField booking=new TextField("Booking Description");
 
 	Label pstbkg=new Label("Past Bookings");
 	
@@ -51,7 +55,9 @@ public class HomeView extends TopBarView implements View {
 		final HorizontalLayout layout2=new HorizontalLayout(); 
 		final VerticalLayout layout3 = new VerticalLayout();
 		final VerticalLayout layout4 = new VerticalLayout();
-		layout3.addComponents(home,reserve);
+		final HorizontalLayout layout5=new HorizontalLayout(); 
+		layout5.addComponents(member);
+		layout3.addComponents(home,layout5,reserve);
 		layout4.addComponents(pstbkg,date,grid);
 		layout2.setSizeFull();
 		layout2.addComponents(layout3,layout4);
@@ -82,6 +88,8 @@ public class HomeView extends TopBarView implements View {
 	}
 
 	private void dataProcess() {
+		//textfield
+		member.setPlaceholder("Type member #");
 		//order
 		orders.add(new Order("2018-04-01","14:00","15:00","Ball","Great Room 202",OrderStatus.Comfirmed));
 		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
