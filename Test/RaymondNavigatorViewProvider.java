@@ -4,8 +4,6 @@ import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewProvider;
-
-import raymond.BetaReserve.BetaResView;
 import raymond.Login.LoginView;
 import raymond.TestDetails.*;
 import raymond.TestHomePage.*;
@@ -46,8 +44,6 @@ public class RaymondNavigatorViewProvider implements ViewProvider {
 			return new DetailsView();
 		case "login":
 			return new LoginView();
-		case "betares":
-			return new BetaResView();
 		default:
 			logger.error("Unable to determine view");
 			return null;

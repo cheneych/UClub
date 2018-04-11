@@ -26,6 +26,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.MenuBar.Command;
 //import muop.missouri.edu.contracts.User;
 //import muop.missouri.edu.contracts.ContractViewProvider;
 //import muop.missouri.edu.contracts.ContractsUI;
@@ -95,6 +96,18 @@ public abstract class TopBarView extends VerticalLayout implements View {
 		name.setIcon(VaadinIcons.USER);
 		MenuItem account1=name.addItem("Contact us",new ThemeResource("icons/PNG/Help/Help_16x16.png"),null);
 		MenuItem signout1=name.addItem("Logout",new ThemeResource("icons/PNG/Qing/Sign_Out.png"),null);
+		
+		signout1.setCommand(new Command() {
+			public void menuSelected(MenuItem selectedItem) {
+				MyUI.navigateTo("login");
+			}
+		});
+		
+		account1.setCommand(new Command() {
+			public void menuSelected(MenuItem selectedItem) {
+				MyUI.navigateTo("");
+			}
+		});
 		
 //		logout = new Button("Log Out") {
 //			{

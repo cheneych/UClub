@@ -100,31 +100,129 @@ public class ReservationView extends TopBarView implements View {
 		//treeGrid.setItems();
 		treeGrid.setVisible(false);
 		treeGrid.setSizeFull();
-		treeGrid.addColumn(Room::getRoom).setCaption("Room");
-		treeGrid.addColumn(Room::getA4).setCaption("4a");
-		treeGrid.addColumn(Room::getA5).setCaption("5a");
-		treeGrid.addColumn(Room::getA6).setCaption("6a");
-		treeGrid.addColumn(Room::getA7).setCaption("7a");
-		treeGrid.addColumn(Room::getA8).setCaption("8a");
-		treeGrid.addColumn(Room::getA9).setCaption("9a");
-		treeGrid.addColumn(Room::getA10).setCaption("10a");
-		treeGrid.addColumn(Room::getA11).setCaption("11a");
-		treeGrid.addColumn(Room::getA12).setCaption("12a");
-		treeGrid.addColumn(Room::getP1).setCaption("1p");
-		treeGrid.addColumn(Room::getP2).setCaption("2p");
-		treeGrid.addColumn(Room::getP3).setCaption("3p");
-		treeGrid.addColumn(Room::getP4).setCaption("4p");
-		treeGrid.addColumn(Room::getP5).setCaption("5p");
-		treeGrid.addColumn(Room::getP6).setCaption("6p");
-		treeGrid.addColumn(Room::getP7).setCaption("7p");
-		treeGrid.addColumn(Room::getP8).setCaption("8p");
-		treeGrid.addColumn(Room::getP9).setCaption("9p");
-		treeGrid.addColumn(Room::getP10).setCaption("10p");
-		treeGrid.addColumn(Room::getP11).setCaption("11p");
-		treeGrid.addColumn(Room::getP12).setCaption("12p");
-		treeGrid.addColumn(Room::getA1).setCaption("1a");
-		treeGrid.addColumn(Room::getA2).setCaption("2a");
-		treeGrid.addColumn(Room::getA3).setCaption("3a");
+		treeGrid.addColumn(Room::getRoom).setCaption("Room").setStyleGenerator(e->{
+			return "room";
+		});
+		treeGrid.addColumn(Room::getA4).setCaption("4a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA4().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA5).setCaption("5a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA5().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA6).setCaption("6a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA6().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA7).setCaption("7a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA7().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA8).setCaption("8a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA8().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA9).setCaption("9a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA9().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA10).setCaption("10a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA10().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA11).setCaption("11a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA11().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA12).setCaption("12a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA12().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP1).setCaption("1p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP1().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP2).setCaption("2p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP2().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP3).setCaption("3p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP3().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP4).setCaption("4p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP4().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP5).setCaption("5p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP5().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP6).setCaption("6p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP6().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP7).setCaption("7p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP7().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP8).setCaption("8p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP8().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP9).setCaption("9p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP9().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP10).setCaption("10p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP10().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP11).setCaption("11p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP11().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getP12).setCaption("12p").setWidth(63).setStyleGenerator(e->{
+			if (e.getP12().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA1).setCaption("1a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA1().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA2).setCaption("2a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA2().equals(false))
+				return "green";
+			return "red";
+		});
+		treeGrid.addColumn(Room::getA3).setCaption("3a").setWidth(63).setStyleGenerator(e->{
+			if (e.getA3().equals(false))
+				return "green";
+			return "red";
+		});
 		// add new items
 		Room ballroom=new Room("Ball Room");
 		Room studyroom=new Room("Study Room");
@@ -164,6 +262,7 @@ public class ReservationView extends TopBarView implements View {
 		nStep.addClickListener(e->{
 			MyUI.navigateTo("details","test");
 		});
+		
 	}
 
 }

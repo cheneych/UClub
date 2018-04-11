@@ -12,7 +12,7 @@ public class Room {
 		this.a7=false;
 		this.a8=false;
 		this.a9=false;
-		this.a10=false;
+		this.a10=true;
 		this.a11=false;
 		this.a12=false;
 		this.p1=false;
