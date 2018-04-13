@@ -6,17 +6,21 @@ public class Order {
 	private String day;
 	private String startTime;
 	private String endTime;
-	private String des;
-	private String room;
-	private OrderStatus status;
+	private String evtName;
+	//private String room;
+	//private OrderStatus status;
+	
+	public Order() {
+		
+	}
 	
 	public Order(String day,String startTime,String endTime,String des,String room,OrderStatus status) {
 		this.day=day;
 		this.startTime=startTime;
 		this.endTime=endTime;
-		this.des=des;
-		this.room=room;
-		this.status=status;
+		this.evtName=evtName;
+//		this.room=room;
+//		this.status=status;
 	}
 	
 	public String getDate() {
@@ -43,29 +47,29 @@ public class Order {
 		this.endTime=endTime;
 	}
 	
-	public String getDes(){
-		return des;
+	public String getevtName(){
+		return evtName;
 	}
 	
-	public void setDes(String des){
-		this.des=des;
+	public void setevtName(String des){
+		this.evtName=evtName;
 	}
 	
-	public String getRoom(){
-		return room;
-	}
-	
-	public void setRoom(String room){
-		this.room=room;
-	}
-	
-	public OrderStatus getStatus(){
-		return status;
-	}
-	
-	public void setStatus(OrderStatus status){
-		this.status=status;
-	}
+//	public String getRoom(){
+//		return room;
+//	}
+//	
+//	public void setRoom(String room){
+//		this.room=room;
+//	}
+//	
+//	public OrderStatus getStatus(){
+//		return status;
+//	}
+//	
+//	public void setStatus(OrderStatus status){
+//		this.status=status;
+//	}
 }
 
 

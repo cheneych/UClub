@@ -11,6 +11,7 @@ import java.util.List;
 import com.vaadin.annotations.Theme;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
@@ -22,8 +23,12 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
 
+import raymond.ui.standardgrid.StandardGridConfigurator;
 import raymond.Test.*;
 import raymond.TestDetails.Items;
+import raymond.dataprovider.filter.Filter;
+
+import com.vaadin.data.provider.DataProvider;
 
 @SuppressWarnings("serial")
 @Theme("mytheme")
@@ -39,6 +44,8 @@ public class HomeView extends TopBarView implements View {
 	Label pstbkg=new Label("Past Bookings");
 	
 	DateField date = new DateField();
+	
+	private StandardGridConfigurator configurator;
 	//global variable
 	Grid<Order> grid=new Grid<>(Order.class);
 	public List<Order> orders=new ArrayList<>();
@@ -91,14 +98,24 @@ public class HomeView extends TopBarView implements View {
 		//textfield
 		member.setPlaceholder("Type member #");
 		//order
-		orders.add(new Order("2018-04-01","14:00","15:00","Ball","Great Room 202",OrderStatus.Comfirmed));
-		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
-		orders.add(new Order("2018-03-27","8:00","11:00","Show","Jesse Hall",OrderStatus.Comfirmed));
+//		orders.add(new Order("2018-04-01","14:00","15:00","Ball","Great Room 202",OrderStatus.Comfirmed));
+//		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
+//		orders.add(new Order("2018-03-27","8:00","11:00","Show","Jesse Hall",OrderStatus.Comfirmed));
 		//grid
-		grid.setColumns("startTime","endTime","des","room","status");
+//		grid.setColumns("startTime","endTime","des","room","status");
+		grid.setColumns("startTime","endTime","evtName");
 		grid.setSizeFull();
-		grid.setItems(orders);
+		//grid.setItems(orders);
 		//date
 		date.setValue(LocalDate.now());
+	}
+	
+	@Override
+	public void enter(ViewChangeEvent event) {
+		OrderDataService service = new OrderDataService();
+		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),
+				query -> service.count(query));
+		grid.setDataProvider(provider);
+		configurator.configure(grid);
 	}
 }
