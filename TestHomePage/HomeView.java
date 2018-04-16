@@ -29,11 +29,14 @@ import raymond.TestDetails.Items;
 import raymond.dataprovider.filter.Filter;
 
 import com.vaadin.data.provider.DataProvider;
+import com.vaadin.external.org.slf4j.Logger;
+import com.vaadin.external.org.slf4j.LoggerFactory;
 
 @SuppressWarnings("serial")
 @Theme("mytheme")
 //public class HomeView extends VerticalLayout implements View {
 public class HomeView extends TopBarView implements View {
+	final transient Logger logger = LoggerFactory.getLogger(HomeView.class);
 	//Components
 	private Button reserve=new Button("Create a new Reservation");
 	private Button home=new Button("HOME");
@@ -102,8 +105,15 @@ public class HomeView extends TopBarView implements View {
 //		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
 //		orders.add(new Order("2018-03-27","8:00","11:00","Show","Jesse Hall",OrderStatus.Comfirmed));
 		//grid
+		configurator = new StandardGridConfigurator() {
+			{
+				add(new GridColumn("startTime", "startTime"));
+				add(new GridColumn("endTime", "endTime"));
+				add(new GridColumn("evtName", "evtName"));
+			}
+		};
 //		grid.setColumns("startTime","endTime","des","room","status");
-		grid.setColumns("startTime","endTime","evtName");
+		//grid.setColumns("startTime","endTime","evtName");
 		grid.setSizeFull();
 		//grid.setItems(orders);
 		//date
@@ -113,8 +123,7 @@ public class HomeView extends TopBarView implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		OrderDataService service = new OrderDataService();
-		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),
-				query -> service.count(query));
+		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
 		grid.setDataProvider(provider);
 		configurator.configure(grid);
 	}

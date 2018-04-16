@@ -19,6 +19,7 @@ public class OrderDataService extends DataService<Order> {
 
 	public OrderDataService() {
 		super(Pools.getConnectionPool(Names.RAYMOND));
+		System.out.println("enter ser");
 		sqlQuery = "select * from EVENT";
 	}
 
@@ -40,7 +41,6 @@ public class OrderDataService extends DataService<Order> {
 	protected Result<Order> get(Connection conn, String OrderId) throws SQLException {
 
 		try (PreparedStatement stmt = conn.prepareStatement("select * from EVENT where EVTID = 33600")) {
-
 			setString(stmt, 1, OrderId);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
