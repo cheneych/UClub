@@ -88,7 +88,7 @@ public class HomeView extends TopBarView implements View {
 			List<Order> newOrders=new ArrayList<>();
 			String s=e.getValue().toString();
 			for (Order o:orders) {
-				if (o.getDate().equals(s)) {
+				if (o.getDay().equals(s)) {
 					newOrders.add(o);
 				}
 			}
@@ -125,6 +125,6 @@ public class HomeView extends TopBarView implements View {
 		OrderDataService service = new OrderDataService();
 		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
 		grid.setDataProvider(provider);
-		configurator.configure(grid);
+		// configurator.configure(grid);
 	}
 }

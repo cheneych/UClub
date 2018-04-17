@@ -1,11 +1,13 @@
 package raymond.TestHomePage;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 public class Order {
-	private String day;
-	private String startTime;
-	private String endTime;
+	private LocalDate day;
+	private LocalTime startTime;
+	private LocalTime endTime;
 	private String evtName;
 	//private String room;
 	//private OrderStatus status;
@@ -14,7 +16,7 @@ public class Order {
 		
 	}
 	
-	public Order(String day,String startTime,String endTime,String des,String room,OrderStatus status) {
+	public Order(LocalDate day, LocalTime startTime, LocalTime endTime,String des,String room,OrderStatus status) {
 		this.day=day;
 		this.startTime=startTime;
 		this.endTime=endTime;
@@ -23,39 +25,40 @@ public class Order {
 //		this.status=status;
 	}
 	
-	public String getDate() {
+	
+	public LocalDate getDay() {
 		return day;
 	}
-	
-	public void setDate(String day) {
-		this.day=day;
+
+	public void setDay(LocalDate day) {
+		this.day = day;
 	}
-	
-	public String getStartTime(){
+
+	public LocalTime getStartTime() {
 		return startTime;
 	}
-	
-	public void setStartTime(String startTime){
-		this.startTime=startTime;
+
+	public void setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
 	}
-	
-	public String getEndTime(){
+
+	public LocalTime getEndTime() {
 		return endTime;
 	}
-	
-	public void setEndTime(String endTime){
-		this.endTime=endTime;
+
+	public void setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
 	}
-	
-	public String getevtName(){
+
+	public String getEvtName() {
 		return evtName;
 	}
-	
-	public void setevtName(String des){
-		this.evtName=evtName;
+
+	public void setEvtName(String evtName) {
+		this.evtName = evtName;
 	}
-	
-//	public String getRoom(){
+
+	//	public String getRoom(){
 //		return room;
 //	}
 //	

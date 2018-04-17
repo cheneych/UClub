@@ -11,27 +11,28 @@ import java.util.Collection;
 
 import com.vaadin.data.Result;
 
-import TestDB.DataService;
-import TestDB.Pools;
-import TestDB.Pools.Names;
+import raymond.TestDB.DataService;
+import raymond.TestDB.Pools;
+import raymond.TestDB.Pools.Names;
 
 public class OrderDataService extends DataService<Order> {
 
 	public OrderDataService() {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		System.out.println("enter ser");
-		sqlQuery = "select * from EVENT";
+		sqlQuery = "select evtstart2 as day, evtstart2 as starttime, evtend2 as endtime, evtname as name from EVENT ";
 	}
 
+	@Override
 	public Order getRow(ResultSet rs) throws SQLException {
-
+		System.out.println("Getting row");
 		Order u = new Order();
 		int i = 1;
 
-		u.setDate(getString(rs, i++));
-		u.setStartTime(getString(rs, i++));
-		u.setEndTime(getString(rs, i++));
-		u.setevtName(getString(rs, i++));
+		u.setDay(getLocalDate(rs, i++));
+		u.setStartTime(getLocalTime(rs, i++));
+		u.setEndTime(getLocalTime(rs, i++));
+		u.setEvtName(getString(rs, i++));
 		//u.setRoom(getString(rs, i++));
 
 		return u;
@@ -91,10 +92,10 @@ public class OrderDataService extends DataService<Order> {
 			int x = 1;
 			call.registerOutParameter(x++, Types.VARCHAR);
 
-			setString(call, x++, row.getDate());
-			setString(call, x++, row.getStartTime());
-			setString(call, x++, row.getEndTime());
-			setString(call, x++, row.getevtName());
+			setTimestamp(call, x++, row.getDay());
+			setTimestamp(call, x++, row.getStartTime());
+			setTimestamp(call, x++, row.getEndTime());
+			setString(call, x++, row.getEvtName());
 			//setString(call, x++, row.getRoom());
 
 			call.executeUpdate();

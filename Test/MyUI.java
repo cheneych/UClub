@@ -11,6 +11,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import raymond.TestDB.Pools;
 import raymond.TestHomePage.HomeView;
 
 /**
@@ -25,7 +26,9 @@ import raymond.TestHomePage.HomeView;
 public class MyUI extends UI {
 	
 	public Navigator navigator; 
-
+	public 	final static Pools pools = new Pools();
+	
+	
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();

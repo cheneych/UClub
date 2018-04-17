@@ -1,4 +1,4 @@
-package TestDB;
+package raymond.TestDB;
 
 public class Property {
 	

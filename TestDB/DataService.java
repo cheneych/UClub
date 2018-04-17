@@ -1,4 +1,4 @@
-package TestDB;
+package raymond.TestDB;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -118,6 +119,7 @@ public abstract class DataService<T> {
 		}
 
 		logger.debug(resultQuery.toString());
+		System.err.println(resultQuery.toString());
 
 		return resultQuery.toString();
 	}
@@ -170,6 +172,7 @@ public abstract class DataService<T> {
 			}
 
 		} catch (SQLException e) {
+			e.printStackTrace();
 			logger.error("Unable to fetch results", e);
 		}
 		return list.stream();
@@ -208,6 +211,15 @@ public abstract class DataService<T> {
 		java.sql.Date d = rs.getDate(pos);
 		if (d != null) {
 			return rs.getDate(pos).toLocalDate();
+		} else {
+			return null;
+		}
+	}
+	
+	public static LocalTime getLocalTime(ResultSet rs, int pos) throws SQLException {
+		Timestamp d = rs.getTimestamp(pos);
+		if(d!= null) {
+			return rs.getTimestamp(pos).toLocalDateTime().toLocalTime();
 		} else {
 			return null;
 		}
@@ -252,6 +264,8 @@ public abstract class DataService<T> {
 
 			call.setTimestamp(pos, java.sql.Timestamp.valueOf((LocalDateTime) value));
 
+		} else if (value instanceof LocalTime) {
+			call.setTime(pos,  java.sql.Time.valueOf((LocalTime) value));
 		}
 	}
 
