@@ -26,9 +26,7 @@ import raymond.TestHomePage.HomeView;
 public class MyUI extends UI {
 	
 	public Navigator navigator; 
-	public 	final static Pools pools = new Pools();
-	
-	
+		
 	@Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();

@@ -282,12 +282,16 @@ public class ContextListener implements ServletContextListener {
 	}
 
 	final static Pools pools = new Pools();
+	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Context Listener contextInitialized Called.");
 		}
+		
+		
+		
 		event.getServletContext().setAttribute("POOLS", pools);
 //
 //		initReport(event.getServletContext());

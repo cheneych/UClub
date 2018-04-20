@@ -52,7 +52,7 @@ public class HomeView extends TopBarView implements View {
 	
 	private StandardGridConfigurator configurator;
 	//global variable
-	Grid<Order> grid=new Grid<>(Order.class);
+	Grid<Order> grid=new Grid<Order>(Order.class);
 	public List<Order> orders=new ArrayList<>();
 	
 	public HomeView() {
@@ -99,8 +99,8 @@ public class HomeView extends TopBarView implements View {
 //			}
 //			grid.setItems(newOrders);
 			OrderDataService service = new OrderDataService(s,"date");
-			DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
-			grid.setDataProvider(provider);
+			grid.setDataProvider(service.getDataProvider());
+			grid.setColumns("evtName","custName");
 
 		});
 		

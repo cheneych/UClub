@@ -58,19 +58,19 @@ public class ItemsForm extends FormLayout {
 	}
 
 	public void binderInit() {
-		binder.forField(price)
-		.withConverter(
-				new StringToDoubleConverter(""))
-		.bind(Items::getPrice, Items::setPrice);
-
-		binder.forField(Qty)
-		.withConverter(
-				new StringToIntegerConverter(""))
-		.bind(Items::getQty, Items::setQty);
-
-		binder.forField(total)
-		.withConverter(
-				new StringToDoubleConverter(""))
-		.bind(Items::getTotal, Items::setTotal);
+//		binder.forField(price)
+//		.withConverter(
+//				new StringToDoubleConverter(""))
+//		.bind(Items::getPrice, Items::setPrice);
+//
+//		binder.forField(Qty)
+//		.withConverter(
+//				new StringToIntegerConverter(""))
+//		.bind(Items::getQty, Items::setQty);
+//
+//		binder.forField(total)
+//		.withConverter(
+//				new StringToDoubleConverter(""))
+//		.bind(Items::getTotal, Items::setTotal);
 	}
 }

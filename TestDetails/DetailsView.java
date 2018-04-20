@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -30,6 +31,7 @@ import com.vaadin.ui.MenuBar.MenuItem;
 import raymond.Test.MyUI;
 import raymond.Test.TopBarView;
 import raymond.TestHomePage.*;
+import raymond.dataprovider.filter.Filter;
 
 
 public class DetailsView extends TopBarView implements View {
@@ -56,9 +58,6 @@ public class DetailsView extends TopBarView implements View {
 
 	TextField numPeople=new TextField("# People");
 	//global variables
-	List<Items> i1=new ArrayList<>(Arrays.asList(new Items("cake",12.5),new Items("Brownie",6.0),new Items("Donuts",7.5)));
-	List<Items> i2=new ArrayList<>(Arrays.asList(new Items("Beef",10),new Items("Pork",6.0),new Items("Shrimp",9.5)));
-	List<Items> i3=new ArrayList<>(Arrays.asList(new Items("Champagne",18),new Items("Sangria",16.5),new Items("Bottled Water",2)));
 	
 	public ItemsForm form=new ItemsForm(this);
 	public ListsForm form2=new ListsForm(this);
@@ -76,9 +75,6 @@ public class DetailsView extends TopBarView implements View {
 	List<String> serviceDes=new ArrayList<>();
 	List<String> itemNames=new ArrayList<String>();
 	
-	List<String> sd1=new ArrayList<>(Arrays.asList("Dessert","Dinner","Dinner-Buffet"));
-	List<String> sd2=new ArrayList<>(Arrays.asList("Cash Bar","Host Bar","Package Bar"));
-	List<String> sd3=new ArrayList<>(Arrays.asList("Balloons","FireWorks","Audio & Visual"));
 
 	public DetailsView() {
 		init();
@@ -113,7 +109,6 @@ public class DetailsView extends TopBarView implements View {
 	}
 
 	private void dataProcess() {
-		//barmenu
 		//grid
 		grid.addComponent(booking, 0,0,2,0);
 		grid.addComponent(cato,0,1);
@@ -130,6 +125,9 @@ public class DetailsView extends TopBarView implements View {
 		itemGrid.setColumns("name","price","qty","total");
 		itemGrid.setVisible(false);
 		//item
+		ItemsDataService service3 = new ItemsDataService(DescripDataService.DesList.get(0).getServtypeid());
+		for (int i=0;i<ItemsDataService.ItemList.size();i++)
+			itemNames.add(ItemsDataService.ItemList.get(i).getServitemname());
 		itemCBG.setItems(itemNames);
 		itemCBG.setVisible(false);
 		//forms
@@ -146,17 +144,18 @@ public class DetailsView extends TopBarView implements View {
 		itemTb.put("Sangria", 16.5); 
 		itemTb.put("Bottled Water", 2.0); 
 		//itemNames
-		for (Items I:i1)
-			itemNames.add(I.getName());   
+	 
 		//category
-		category.add("Food & Beverage");
-		category.add("Bar Service");
-		category.add("Equipment");
+		CategoryDataService service = new CategoryDataService();
+		for (int i=0;i<CategoryDataService.CateList.size();i++)
+			category.add(CategoryDataService.CateList.get(i).getHeaderdesc());
 		//serviceDes
-		serviceDes.addAll(sd1);
+		DescripDataService service2=new DescripDataService(CategoryDataService.CateList.get(0).getHeadertypeid());
+		for (int i=0;i<DescripDataService.DesList.size();i++)
+			serviceDes.add(DescripDataService.DesList.get(i).getServtype());
 		//cato
 		cato.setItems(category);
-		cato.setSelectedItem("Food & Beverage");
+		cato.setSelectedItem(category.get(0));
 		cato.setEmptySelectionAllowed(false);
 		//serv
 		serv.setItems(serviceDes);
@@ -169,24 +168,23 @@ public class DetailsView extends TopBarView implements View {
 
 	private void eventProcess() {
 		//item comboboxgroup
-		itemCBG.addSelectionListener(e->{
-			List<String> listSel=new ArrayList<String>(itemCBG.getSelectedItems());
-			for (String s:itemNames) {
-				if (listSel.contains(s) && !itemList.containsKey(s)) {
-					itemList.put(s, next++);
-					itemsAll.add(new Items(s,itemTb.get(s)));
-				}
-				else if (!listSel.contains(s) && itemList.containsKey(s)) {
-					for (Items i:itemsAll)
-						if (i.getName().equals(s)) {
-							itemsAll.remove(i);
-							break;
-						}
-					itemList.remove(s);
-				}
-			}
-			update();
-		});
+//		itemCBG.addSelectionListener(e->{
+//			List<String> listSel=new ArrayList<String>(itemCBG.getSelectedItems());
+//			for (String s:itemNames) {
+//				if (listSel.contains(s) && !itemList.containsKey(s)) {
+//					itemList.put(s, next++);
+//				}
+//				else if (!listSel.contains(s) && itemList.containsKey(s)) {
+//					for (Items i:itemsAll)
+//						if (i.getName().equals(s)) {
+//							itemsAll.remove(i);
+//							break;
+//						}
+//					itemList.remove(s);
+//				}
+//			}
+//			update();
+//		});
 		//item group
 		itemGrid.asSingleSelect().addValueChangeListener(e->{
 			if (e.getValue()==null) {
@@ -234,46 +232,41 @@ public class DetailsView extends TopBarView implements View {
 		cato.addValueChangeListener(e->{
 			String ctg=e.getValue();
 			serviceDes.clear();
-			switch(ctg) {
-				case "Food & Beverage":
-					serviceDes.addAll(sd1);
+			for (int i=0;i<category.size();i++) {
+				if (category.get(i).equals(ctg)) {
+					DescripDataService service2=new DescripDataService(CategoryDataService.CateList.get(i).getHeadertypeid());
+					for (int j=0;j<DescripDataService.DesList.size();j++)
+						serviceDes.add(DescripDataService.DesList.get(j).getServtype());
 					break;
-				case "Bar Service":
-					serviceDes.addAll(sd2);
-					break;
-				case "Equipment":
-					serviceDes.addAll(sd3);
-					break;
-				default:
-					break;
+				}
 			}
 			serv.setItems(serviceDes);
 			serv.setSelectedItem(serviceDes.get(0));
 			serv.setEmptySelectionAllowed(false);
 		});
 		//serv
-		serv.addValueChangeListener(e->{
-			String sd=e.getValue();
-			itemNames.clear();
-			switch(sd) {
-				case "Dessert":
-					for (Items I:i1)
-						itemNames.add(I.getName()); 
-					break;
-				case "Dinner":
-					for (Items I:i2)
-						itemNames.add(I.getName()); 
-					break;
-				case "Host Bar":
-					for (Items I:i3)
-						itemNames.add(I.getName()); 
-					break;
-				default:
-					break;
-			}
-			itemCBG.setItems(itemNames);
-			itemCBG.setVisible(false);
-		});
+//		serv.addValueChangeListener(e->{
+//			String sd=e.getValue();
+//			itemNames.clear();
+//			switch(sd) {
+//				case "Dessert":
+//					for (Items I:i1)
+//						itemNames.add(I.getName()); 
+//					break;
+//				case "Dinner":
+//					for (Items I:i2)
+//						itemNames.add(I.getName()); 
+//					break;
+//				case "Host Bar":
+//					for (Items I:i3)
+//						itemNames.add(I.getName()); 
+//					break;
+//				default:
+//					break;
+//			}
+//			itemCBG.setItems(itemNames);
+//			itemCBG.setVisible(false);
+//		});
 		
 		finish.addClickListener(e->{
 			MyUI.navigateTo("home");
