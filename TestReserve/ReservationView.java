@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vaadin.data.TreeData;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
@@ -14,6 +15,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateTimeField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -26,6 +28,10 @@ import com.vaadin.ui.MenuBar.MenuItem;
 
 import raymond.Test.MyUI;
 import raymond.Test.TopBarView;
+import raymond.TestHomePage.Order;
+import raymond.TestHomePage.OrderDataService;
+import raymond.dataprovider.filter.Filter;
+import raymond.Test.*;
 
 @SuppressWarnings("serial")
 public class ReservationView extends TopBarView implements View {
@@ -36,10 +42,7 @@ public class ReservationView extends TopBarView implements View {
 	TextField cName=new TextField("Custormer Name");
 	TextField dates=new TextField("Dates");
 	TextField nPhone=new TextField("Phone Number");
-
-//	Tree<String> room = new Tree<>();
-//	TreeData<String> roomData = new TreeData<>();
-//	TreeDataProvider inMemoryDataProvider = new TreeDataProvider<>(roomData);
+	
 	
 	TreeGrid<Room> treeGrid=new TreeGrid<>();
 	TreeDataProvider<Room> dataProvider = (TreeDataProvider<Room>) treeGrid.getDataProvider();
@@ -53,12 +56,6 @@ public class ReservationView extends TopBarView implements View {
 
 	FormLayout form1=new FormLayout();
 	FormLayout form2=new FormLayout();
-
-	//GridLayout grid=new GridLayout(2,2);
-
-	//ComboBox<String> select=new ComboBox<>("Create booking in this time zone");
-	//Global Variable
-	//List<String> zone=new ArrayList<>();
 
 	public ReservationView() {
 		init();
@@ -89,18 +86,10 @@ public class ReservationView extends TopBarView implements View {
 	}
 
 	private void dataProcess() {
-		//room
-//		roomData.addItem(null,"Ball Room");
-//		roomData.addItem(null,"Study Room");
-//		roomData.addItem(null,"Dining Room");
-//		roomData.addItem("Ball Room","2205B");
-//		roomData.addItem("Study Room","2201A");
-//		room.setDataProvider(inMemoryDataProvider);
 		//treegrid
-		//treeGrid.setItems();
 		treeGrid.setVisible(false);
 		treeGrid.setSizeFull();
-		treeGrid.addColumn(Room::getRoom).setCaption("Room").setStyleGenerator(e->{
+		treeGrid.addColumn(Room::getRoom).setCaption("Room").setWidth(300).setStyleGenerator(e->{
 			return "room";
 		});
 		treeGrid.addColumn(Room::getA4).setCaption("4a").setWidth(63).setStyleGenerator(e->{
@@ -223,32 +212,6 @@ public class ReservationView extends TopBarView implements View {
 				return "green";
 			return "red";
 		});
-		// add new items
-		Room ballroom=new Room("Ball Room");
-		Room studyroom=new Room("Study Room");
-		Room diningroom=new Room("Dining Room");
-		Room br1=new Room("2205A");
-		Room br2=new Room("2205B");
-		data.addItem(null,ballroom);
-		data.addItems(null,studyroom);
-		data.addItems(null,diningroom);
-		data.addItems(ballroom,br1,br2);
-		dataProvider.refreshAll();
-		//grid
-//		grid.addComponent(DAT,0,0,1,0);
-//		grid.addComponent(sDate,0,1);
-//		grid.addComponent(eDate,1,1);
-		//grid.addComponent(select,0,3,1,3);
-//		grid.addComponent(new Label("Room"),0,0);
-//		grid.addComponent(button,1,1);
-		//zone
-//		zone.add("Central Time");
-//		zone.add("Pacific Time");
-//		zone.add("East Time");
-		//select
-//		select.setItems(zone);
-//		select.setSelectedItem("Central Time");
-//		select.setEmptySelectionAllowed(false);
 		//form1
 		form1.addComponents(booking,cName);
 		form2.addComponents(dates,nPhone);
@@ -256,11 +219,47 @@ public class ReservationView extends TopBarView implements View {
 
 	private void eventProcess() {
 		button.addClickListener(e->{
-			treeGrid.setVisible(true);
+			if (sDate.getValue().toLocalDate().equals(eDate.getValue().toLocalDate())) {
+				RoomDataService.roomList.clear();
+				data.clear();
+				RoomDataService service = new RoomDataService(sDate.getValue().toLocalDate().toString());
+				data.addItems(null,RoomDataService.roomList.get(0));
+				data.addItems(RoomDataService.roomList.get(0),RoomDataService.roomList.get(1));
+				data.addItems(null,RoomDataService.roomList.get(2)); data.addItems(null,RoomDataService.roomList.get(3));
+				data.addItems(null,RoomDataService.roomList.get(4)); data.addItems(null,RoomDataService.roomList.get(5));
+				data.addItems(RoomDataService.roomList.get(5),RoomDataService.roomList.get(6)); 
+				data.addItems(RoomDataService.roomList.get(5),RoomDataService.roomList.get(7)); 
+				data.addItems(RoomDataService.roomList.get(5),RoomDataService.roomList.get(8)); 
+				data.addItems(null,RoomDataService.roomList.get(9));
+				data.addItems(null,RoomDataService.roomList.get(10)); data.addItems(null,RoomDataService.roomList.get(11));
+				data.addItems(null,RoomDataService.roomList.get(12)); data.addItems(null,RoomDataService.roomList.get(13));
+				data.addItems(null,RoomDataService.roomList.get(14)); 
+				data.addItems(null,RoomDataService.roomList.get(15));
+				data.addItems(RoomDataService.roomList.get(15),RoomDataService.roomList.get(16)); 
+				data.addItems(RoomDataService.roomList.get(15),RoomDataService.roomList.get(17));
+				data.addItems(RoomDataService.roomList.get(15),RoomDataService.roomList.get(18)); 
+				data.addItems(RoomDataService.roomList.get(15),RoomDataService.roomList.get(19));
+				data.addItems(null,RoomDataService.roomList.get(20)); data.addItems(null,RoomDataService.roomList.get(21));
+				data.addItems(null,RoomDataService.roomList.get(22)); data.addItems(null,RoomDataService.roomList.get(23));
+				data.addItems(null,RoomDataService.roomList.get(24)); data.addItems(null,RoomDataService.roomList.get(25));
+				data.addItems(null,RoomDataService.roomList.get(26)); data.addItems(null,RoomDataService.roomList.get(27));
+				data.addItems(null,RoomDataService.roomList.get(28)); data.addItems(null,RoomDataService.roomList.get(29));
+				data.addItems(null,RoomDataService.roomList.get(30)); data.addItems(null,RoomDataService.roomList.get(31));
+				dataProvider.refreshAll();
+				treeGrid.setVisible(true);
+			}
 		});
 
 		nStep.addClickListener(e->{
 			MyUI.navigateTo("details","test");
+		});
+		
+		sDate.addValueChangeListener(e->{
+			treeGrid.setVisible(false);
+		});
+		
+		eDate.addValueChangeListener(e->{
+			treeGrid.setVisible(false);
 		});
 		
 	}

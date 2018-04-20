@@ -29,6 +29,7 @@ import raymond.TestDetails.Items;
 import raymond.dataprovider.filter.Filter;
 
 import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 
@@ -42,11 +43,12 @@ public class HomeView extends TopBarView implements View {
 	private Button home=new Button("HOME");
 
 	TextField member=new TextField("member #");
+	TextField customer=new TextField("customer");
 	//TextField booking=new TextField("Booking Description");
 
 	Label pstbkg=new Label("Past Bookings");
 	
-	DateField date = new DateField();
+	DateField date = new DateField("date");
 	
 	private StandardGridConfigurator configurator;
 	//global variable
@@ -66,10 +68,12 @@ public class HomeView extends TopBarView implements View {
 		final VerticalLayout layout3 = new VerticalLayout();
 		final VerticalLayout layout4 = new VerticalLayout();
 		final HorizontalLayout layout5=new HorizontalLayout(); 
+		final HorizontalLayout layout6=new HorizontalLayout(); 
 		layout5.addComponents(member);
 		layout3.addComponents(home,layout5,reserve);
-		layout4.addComponents(pstbkg,date,grid);
-		layout2.setSizeFull();
+		layout6.addComponents(date,customer);
+		layout4.addComponents(pstbkg,layout6,grid);
+		//layout2.setSizeFull();
 		layout2.addComponents(layout3,layout4);
 
 		addComponents(layout2);
@@ -85,14 +89,26 @@ public class HomeView extends TopBarView implements View {
 		});
 		
 		date.addValueChangeListener(e->{
-			List<Order> newOrders=new ArrayList<>();
+//			List<Order> newOrders=new ArrayList<>();
 			String s=e.getValue().toString();
-			for (Order o:orders) {
-				if (o.getDay().equals(s)) {
-					newOrders.add(o);
-				}
-			}
-			grid.setItems(newOrders);
+			System.out.println(s);
+//			for (Order o:orders) {
+//				if (o.getDay().equals(s)) {
+//					newOrders.add(o);
+//				}
+//			}
+//			grid.setItems(newOrders);
+			OrderDataService service = new OrderDataService(s,"date");
+			DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
+			grid.setDataProvider(provider);
+
+		});
+		
+		customer.addValueChangeListener(e->{
+			String s=e.getValue().toString();
+			OrderDataService service2 = new OrderDataService(s,"customer");
+			DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service2.fetch(query),query -> service2.count(query));
+			grid.setDataProvider(provider);
 		});
 		
 	}
@@ -107,14 +123,15 @@ public class HomeView extends TopBarView implements View {
 		//grid
 		configurator = new StandardGridConfigurator() {
 			{
-				add(new GridColumn("startTime", "startTime"));
-				add(new GridColumn("endTime", "endTime"));
-				add(new GridColumn("evtName", "evtName"));
+				add(new GridColumn("evtname", "evttime"));
+				add(new GridColumn("custname", "custname"));
+				add(new GridColumn("day", "day"));
 			}
 		};
 //		grid.setColumns("startTime","endTime","des","room","status");
 		//grid.setColumns("startTime","endTime","evtName");
 		grid.setSizeFull();
+		grid.setWidth("1000px");
 		//grid.setItems(orders);
 		//date
 		date.setValue(LocalDate.now());
@@ -122,9 +139,9 @@ public class HomeView extends TopBarView implements View {
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		OrderDataService service = new OrderDataService();
-		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
-		grid.setDataProvider(provider);
-		// configurator.configure(grid);
+//		OrderDataService service = new OrderDataService();
+//		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
+//		grid.setDataProvider(provider);
+		configurator.configure(grid);
 	}
 }

@@ -64,7 +64,8 @@ public class Main {
 		ResultSet rs;
 		String[] AllTb=new String[500];
 		try {
-			rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='dbo' AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME");//Extract all table names from sqlsv
+//			rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='dbo' AND TABLE_TYPE='BASE TABLE' ORDER BY TABLE_NAME");//Extract all table names from sqlsv
+			rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA='dbo' AND TABLE_NAME='query_functionallrooms' ORDER BY TABLE_NAME");//Extract view names
 			while (rs.next())
 				AllTb[total++]=rs.getString(1);
 			while ( item!=total) {
@@ -193,7 +194,8 @@ public class Main {
 	//db Create
 	public void dbCreate(String sNameType,Statement stmt2,int id) throws SQLException {
 		ResultSet rs;
-		rs=stmt2.executeQuery("CREATE TABLE RAYMOND."+extractedTb[id]+"("+sNameType+")");
+		//rs=stmt2.executeQuery("CREATE TABLE RAYMOND."+extractedTb[id]+"("+sNameType+")");
+		rs=stmt2.executeQuery("CREATE VIEW RAYMOND."+extractedTb[id]+"("+sNameType+")");
 	}
 	//db Load
 	public void dbLoad(String sName,String sData,Statement stmt2,int id,String declare) throws SQLException {
@@ -335,30 +337,30 @@ public class Main {
 		//		}catch(Exception e){
 		//		}
 		//DB Extract2 
-//		for (int i=0;i<=ETL.tableNum;i++) {
-//			System.out.println(i+" table(s) transformed "+ETL.extractedTb[i]);
-//			ETL.dataExtract(stmt,stmt2,i);
-//		}
+		for (int i=0;i<=ETL.tableNum;i++) {
+			System.out.println(i+" table(s) transformed "+ETL.extractedTb[i]);
+			ETL.dataExtract(stmt,stmt2,i);
+		}
 		//Modify
-//		for (int i=0;i<=ETL.tableNum;i++) {
-//			System.out.println(i+" table(s) modified "+ETL.extractedTb[i]);
-//			ETL.modify(stmt,stmt2,i);
-//		}
+		for (int i=0;i<=ETL.tableNum;i++) {
+			System.out.println(i+" table(s) modified "+ETL.extractedTb[i]);
+			ETL.modify(stmt,stmt2,i);
+		}
 		//Delete Surplus
-//		for (int i=0;i<=ETL.tableNum;i++) {
-//				System.out.println(i+" table(s) deleted "+ETL.extractedTb[i]);
-//				ETL.del(stmt,stmt2,i);
-//			}
+		for (int i=0;i<=ETL.tableNum;i++) {
+				System.out.println(i+" table(s) deleted "+ETL.extractedTb[i]);
+				ETL.del(stmt,stmt2,i);
+			}
 		//Modify
-//		for (int i=0;i<=ETL.tableNum;i++) {
-//			System.out.println(i+" table(s) modified "+ETL.extractedTb[i]);
-//			ETL.modify2(stmt,stmt2,i);
-//		}
+		for (int i=0;i<=ETL.tableNum;i++) {
+			System.out.println(i+" table(s) modified "+ETL.extractedTb[i]);
+			ETL.modify2(stmt,stmt2,i);
+		}
 		//Add Sequence
-//		for (int i=0;i<=ETL.tableNum;i++) {
-//			System.out.println(i+" table(s) add sequence "+ETL.extractedTb[i]);
-//			ETL.addSeq(stmt2,i);
-//		}
+		for (int i=0;i<=ETL.tableNum;i++) {
+			System.out.println(i+" table(s) add sequence "+ETL.extractedTb[i]);
+			ETL.addSeq(stmt2,i);
+		}
 		//Add Trigger
 		for (int i=0;i<=ETL.tableNum;i++) {
 			System.out.println(i+" table(s) add trigger "+ETL.extractedTb[i]);

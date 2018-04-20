@@ -9,9 +9,11 @@ public class Order {
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private String evtName;
+	private String custName;
 	//private String room;
 	//private OrderStatus status;
 	
+
 	public Order() {
 		
 	}
@@ -26,6 +28,14 @@ public class Order {
 	}
 	
 	
+	public String getCustName() {
+		return custName;
+	}
+
+	public void setCustName(String custName) {
+		this.custName = custName;
+	}
+	
 	public LocalDate getDay() {
 		return day;
 	}
@@ -34,21 +44,21 @@ public class Order {
 		this.day = day;
 	}
 
-	public LocalTime getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(LocalTime startTime) {
-		this.startTime = startTime;
-	}
-
-	public LocalTime getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(LocalTime endTime) {
-		this.endTime = endTime;
-	}
+//	public LocalTime getStartTime() {
+//		return startTime;
+//	}
+//
+//	public void setStartTime(LocalTime startTime) {
+//		this.startTime = startTime;
+//	}
+//
+//	public LocalTime getEndTime() {
+//		return endTime;
+//	}
+//
+//	public void setEndTime(LocalTime endTime) {
+//		this.endTime = endTime;
+//	}
 
 	public String getEvtName() {
 		return evtName;
