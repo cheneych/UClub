@@ -29,7 +29,6 @@ public class OrderDataService extends DataService<Order> {
 			char c=0;
 			if (s.length()>0) {
 				c=s.charAt(0);
-				System.out.println("edeed"+c);
 			if (c>='0' && c<='9')
 				sqlQuery = "select evtstart2 as day, custname as customer,evtname as name from (((custt left join event  on custt.custid=event.custid))) WHERE event.CUSTID="+s;
 			else

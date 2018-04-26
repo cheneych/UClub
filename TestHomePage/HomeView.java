@@ -41,14 +41,16 @@ public class HomeView extends TopBarView implements View {
 	//Components
 	private Button reserve=new Button("Create a new Reservation");
 	private Button home=new Button("HOME");
+	private Button dt=new Button("Search by Date");
+	private Button cus=new Button("Search by Customer");
 
 	TextField member=new TextField("member #");
-	TextField customer=new TextField("customer");
+	TextField customer=new TextField();
 	//TextField booking=new TextField("Booking Description");
 
 	Label pstbkg=new Label("Past Bookings");
 	
-	DateField date = new DateField("date");
+	DateField date = new DateField();
 	
 	private StandardGridConfigurator configurator;
 	//global variable
@@ -69,10 +71,12 @@ public class HomeView extends TopBarView implements View {
 		final VerticalLayout layout4 = new VerticalLayout();
 		final HorizontalLayout layout5=new HorizontalLayout(); 
 		final HorizontalLayout layout6=new HorizontalLayout(); 
+		final HorizontalLayout layout7=new HorizontalLayout(); 
 		layout5.addComponents(member);
 		layout3.addComponents(home,layout5,reserve);
 		layout6.addComponents(date,customer);
-		layout4.addComponents(pstbkg,layout6,grid);
+		layout7.addComponents(dt,cus);
+		layout4.addComponents(pstbkg,layout7,layout6,grid);
 		//layout2.setSizeFull();
 		layout2.addComponents(layout3,layout4);
 
@@ -80,6 +84,21 @@ public class HomeView extends TopBarView implements View {
 	}
 
 	private void eventProcess(){
+		dt.addClickListener(e->{
+			dt.setVisible(false);
+			customer.setVisible(false);
+			date.setVisible(true);
+			cus.setVisible(true);
+			grid.setVisible(true);
+		});
+		
+		cus.addClickListener(e->{
+			cus.setVisible(false);
+			customer.setVisible(true);
+			dt.setVisible(true);
+			date.setVisible(false);
+		});
+		
 		home.addClickListener(e->{
 			MyUI.navigateTo("home"); 
 		});        
@@ -100,7 +119,7 @@ public class HomeView extends TopBarView implements View {
 //			grid.setItems(newOrders);
 			OrderDataService service = new OrderDataService(s,"date");
 			grid.setDataProvider(service.getDataProvider());
-			grid.setColumns("evtName","custName");
+			//grid.setColumns("evtName","custName");
 
 		});
 		
@@ -109,6 +128,7 @@ public class HomeView extends TopBarView implements View {
 			OrderDataService service2 = new OrderDataService(s,"customer");
 			DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service2.fetch(query),query -> service2.count(query));
 			grid.setDataProvider(provider);
+			grid.setVisible(true);
 		});
 		
 	}
@@ -116,32 +136,21 @@ public class HomeView extends TopBarView implements View {
 	private void dataProcess() {
 		//textfield
 		member.setPlaceholder("Type member #");
-		//order
-//		orders.add(new Order("2018-04-01","14:00","15:00","Ball","Great Room 202",OrderStatus.Comfirmed));
-//		orders.add(new Order("2018-03-27","19:00","22:00","Party","Great Room 203",OrderStatus.Comfirmed));
-//		orders.add(new Order("2018-03-27","8:00","11:00","Show","Jesse Hall",OrderStatus.Comfirmed));
+		customer.setVisible(false);
+		customer.setPlaceholder("Type customer ID or Name");
+		customer.setWidth("300px");
+
 		//grid
-		configurator = new StandardGridConfigurator() {
-			{
-				add(new GridColumn("evtname", "evttime"));
-				add(new GridColumn("custname", "custname"));
-				add(new GridColumn("day", "day"));
-			}
-		};
-//		grid.setColumns("startTime","endTime","des","room","status");
-		//grid.setColumns("startTime","endTime","evtName");
+		grid.setColumns("evtName","custName","day");
+		grid.setVisible(false);
 		grid.setSizeFull();
 		grid.setWidth("1000px");
-		//grid.setItems(orders);
 		//date
+		date.setVisible(false);
 		date.setValue(LocalDate.now());
 	}
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-//		OrderDataService service = new OrderDataService();
-//		DataProvider<Order, Filter> provider = DataProvider.fromFilteringCallbacks(query -> service.fetch(query),query -> service.count(query));
-//		grid.setDataProvider(provider);
-		configurator.configure(grid);
 	}
 }

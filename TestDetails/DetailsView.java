@@ -52,11 +52,11 @@ public class DetailsView extends TopBarView implements View {
 	ComboBox<String> cato=new ComboBox<>("Catogory");
 	ComboBox<String> serv=new ComboBox<>("service Description");
 
-	GridLayout grid=new GridLayout(3,4);
+	GridLayout grid=new GridLayout(2,7);
 
 	CheckBoxGroup<String> itemCBG=new CheckBoxGroup<>("Item Name");
 
-	TextField numPeople=new TextField("# People");
+	//TextField numPeople=new TextField("# People");
 	//global variables
 	
 	public ItemsForm form=new ItemsForm(this);
@@ -75,7 +75,10 @@ public class DetailsView extends TopBarView implements View {
 	List<String> serviceDes=new ArrayList<>();
 	List<String> itemNames=new ArrayList<String>();
 	
-
+	CategoryDataService service = new CategoryDataService();
+	DescripDataService service2=new DescripDataService(service.CateList.get(0).getHeadertypeid());
+	ItemsDataService service3 = new ItemsDataService(service2.DesList.get(0).getServtypeid());
+	
 	public DetailsView() {
 		init();
 	}
@@ -90,19 +93,22 @@ public class DetailsView extends TopBarView implements View {
 
 		//forth layer
 		final VerticalLayout layout3=new VerticalLayout();
-		layout3.addComponents(finish,itemGrid,comfirm,form);
+		final HorizontalLayout layout5=new HorizontalLayout();
+		layout5.addComponents(comfirm,form);
+		layout3.addComponents(finish,itemGrid,layout5);
 		layout3.setComponentAlignment(finish, Alignment.TOP_RIGHT);
 		layout3.setComponentAlignment(itemGrid, Alignment.TOP_RIGHT);
-		layout3.setComponentAlignment(comfirm, Alignment.TOP_RIGHT);
-		layout3.setComponentAlignment(form, Alignment.TOP_RIGHT);
+		layout5.setComponentAlignment(comfirm, Alignment.TOP_LEFT);
+		layout5.setComponentAlignment(form, Alignment.TOP_RIGHT);
 		final HorizontalLayout layout4=new HorizontalLayout();
 		layout4.addComponents(grid,itemCBG,layout3);
 		layout4.setSizeFull();
 		layout4.setComponentAlignment(layout3, Alignment.TOP_RIGHT);
-		layout4.setComponentAlignment(itemCBG, Alignment.TOP_CENTER);
+		layout4.setComponentAlignment(itemCBG, Alignment.TOP_LEFT);
 		//fifth layer
 
-		addComponents(resDtl,layout4,listGrid,form2);
+		//addComponents(resDtl,layout4,listGrid,form2);
+		addComponents(resDtl,layout4,listGrid);
 	}
 	public void update() {
 		itemGrid.setItems(itemsAll);
@@ -110,49 +116,34 @@ public class DetailsView extends TopBarView implements View {
 
 	private void dataProcess() {
 		//grid
-		grid.addComponent(booking, 0,0,2,0);
+		grid.addComponent(booking, 0,0);
 		grid.addComponent(cato,0,1);
 		grid.addComponent(serv,0,2);
-		grid.addComponent(viewall,1,2);
 		grid.addComponent(sDate,0,3);
-		grid.addComponent(eDate,1,3);
-		grid.addComponent(numPeople,2,3);
+		grid.addComponent(eDate,0,4);
+		grid.addComponent(viewall,0,5);
 		//listGrid
 		listGrid.setVisible(false);
 		listGrid.setWidth("665");
 		listGrid.setColumns("des","ctg","start","end");
 		//itemGrid
-		itemGrid.setColumns("name","price","qty","total");
+		itemGrid.setColumns("servitemname","servitemchrg","qty","total");
 		itemGrid.setVisible(false);
-		//item
-		ItemsDataService service3 = new ItemsDataService(DescripDataService.DesList.get(0).getServtypeid());
-		for (int i=0;i<ItemsDataService.ItemList.size();i++)
-			itemNames.add(ItemsDataService.ItemList.get(i).getServitemname());
-		itemCBG.setItems(itemNames);
-		itemCBG.setVisible(false);
+		
 		//forms
 		form.setVisible(false);
 		form2.setVisible(false);
-		//itemTb
-		itemTb.put("cake", 12.5); 
-		itemTb.put("Brownie", 6.0); 
-		itemTb.put("Donuts", 7.5); 
-		itemTb.put("Beef", 10.0); 
-		itemTb.put("Pork", 6.0); 
-		itemTb.put("Shrimp", 9.5); 
-		itemTb.put("Champagne", 18.0); 
-		itemTb.put("Sangria", 16.5); 
-		itemTb.put("Bottled Water", 2.0); 
-		//itemNames
-	 
+		//comfirm
+		comfirm.setVisible(false);
+		
 		//category
-		CategoryDataService service = new CategoryDataService();
-		for (int i=0;i<CategoryDataService.CateList.size();i++)
-			category.add(CategoryDataService.CateList.get(i).getHeaderdesc());
+//		CategoryDataService service = new CategoryDataService();
+		for (int i=0;i<service.CateList.size();i++)
+			category.add(service.CateList.get(i).getHeaderdesc());
 		//serviceDes
-		DescripDataService service2=new DescripDataService(CategoryDataService.CateList.get(0).getHeadertypeid());
-		for (int i=0;i<DescripDataService.DesList.size();i++)
-			serviceDes.add(DescripDataService.DesList.get(i).getServtype());
+//		DescripDataService service2=new DescripDataService(service.CateList.get(0).getHeadertypeid());
+		for (int i=0;i<service2.DesList.size();i++)
+			serviceDes.add(service2.DesList.get(i).getServtype());
 		//cato
 		cato.setItems(category);
 		cato.setSelectedItem(category.get(0));
@@ -161,51 +152,49 @@ public class DetailsView extends TopBarView implements View {
 		serv.setItems(serviceDes);
 		serv.setSelectedItem(serviceDes.get(0));
 		serv.setEmptySelectionAllowed(false);
-		//comfirm
-		comfirm.setVisible(false);
-
+		//item
+//		ItemsDataService service3 = new ItemsDataService(service2.DesList.get(0).getServtypeid());
+		for (int i=0;i<service3.ItemList.size();i++)
+			itemNames.add(service3.ItemList.get(i).getServitemname());
+		itemCBG.setItems(itemNames);
+		itemCBG.setVisible(false);
 	}
 
 	private void eventProcess() {
 		//item comboboxgroup
-//		itemCBG.addSelectionListener(e->{
-//			List<String> listSel=new ArrayList<String>(itemCBG.getSelectedItems());
-//			for (String s:itemNames) {
-//				if (listSel.contains(s) && !itemList.containsKey(s)) {
-//					itemList.put(s, next++);
-//				}
-//				else if (!listSel.contains(s) && itemList.containsKey(s)) {
-//					for (Items i:itemsAll)
-//						if (i.getName().equals(s)) {
-//							itemsAll.remove(i);
-//							break;
-//						}
-//					itemList.remove(s);
-//				}
-//			}
-//			update();
-//		});
+		itemCBG.addSelectionListener(e->{
+			List<String> listSel=new ArrayList<String>(itemCBG.getSelectedItems());
+			for (int j=0;j<service3.ItemList.size();j++) {
+				String s=service3.ItemList.get(j).getServitemname();
+				if (listSel.contains(s) && !itemList.containsKey(s)) {
+					itemList.put(s, next++);
+					itemsAll.add(service3.ItemList.get(j));
+				}
+				else if (!listSel.contains(s) && itemList.containsKey(s)) {
+					for (Items i:itemsAll)
+						if (i.getServitemname().equals(s)) {
+							itemsAll.remove(i);
+							break;
+						}
+					itemList.remove(s);
+				}
+			}
+			update();
+		});
 		//item group
 		itemGrid.asSingleSelect().addValueChangeListener(e->{
 			if (e.getValue()==null) {
 				form.setVisible(false);
 			}else {
+				System.out.println("look");
 				form.setItems(e.getValue());
 			}
-		});
-		//view all
-		viewall.addClickListener(e->{
-			itemCBG.setVisible(true);
-			itemGrid.setVisible(true);
-			comfirm.setVisible(true);
-			listGrid.setVisible(false);
-			form2.setVisible(false);
 		});
 		//comfirm
 		comfirm.addClickListener(e->{
 			itemCBG.setVisible(false);
 			itemGrid.setVisible(false);
-			System.out.println(itemCBG.getSelectedItems().size());
+			//System.out.println(itemCBG.getSelectedItems().size());
 			if (itemCBG.getSelectedItems().size()>0)
 				lists.add(new Lists(cato.getValue(),serv.getValue(),sDate.getValue(),eDate.getValue(),listnxt++));
 			itemCBG.deselectAll();
@@ -234,40 +223,48 @@ public class DetailsView extends TopBarView implements View {
 			serviceDes.clear();
 			for (int i=0;i<category.size();i++) {
 				if (category.get(i).equals(ctg)) {
-					DescripDataService service2=new DescripDataService(CategoryDataService.CateList.get(i).getHeadertypeid());
-					for (int j=0;j<DescripDataService.DesList.size();j++)
-						serviceDes.add(DescripDataService.DesList.get(j).getServtype());
+					DescripDataService service2t=new DescripDataService(service.CateList.get(i).getHeadertypeid());
+					service2=service2t;
+					for (int j=0;j<service2t.DesList.size();j++)
+						serviceDes.add(service2t.DesList.get(j).getServtype());
 					break;
 				}
 			}
 			serv.setItems(serviceDes);
 			serv.setSelectedItem(serviceDes.get(0));
 			serv.setEmptySelectionAllowed(false);
+			itemCBG.setVisible(false);
+			itemGrid.setVisible(false);
+			comfirm.setVisible(false);
 		});
 		//serv
-//		serv.addValueChangeListener(e->{
-//			String sd=e.getValue();
-//			itemNames.clear();
-//			switch(sd) {
-//				case "Dessert":
-//					for (Items I:i1)
-//						itemNames.add(I.getName()); 
-//					break;
-//				case "Dinner":
-//					for (Items I:i2)
-//						itemNames.add(I.getName()); 
-//					break;
-//				case "Host Bar":
-//					for (Items I:i3)
-//						itemNames.add(I.getName()); 
-//					break;
-//				default:
-//					break;
-//			}
-//			itemCBG.setItems(itemNames);
-//			itemCBG.setVisible(false);
-//		});
-		
+		serv.addValueChangeListener(e->{
+			String sd=e.getValue();
+			itemNames.clear();
+			for (int i=0;i<service2.DesList.size();i++)
+				if (service2.DesList.get(i).getServtype().equals(sd)) {
+					ItemsDataService service3t = new ItemsDataService(service2.DesList.get(i).getServtypeid());
+					service3=service3t;
+					break;
+				}
+			
+			for (int i=0;i<service3.ItemList.size();i++) {
+				itemNames.add(service3.ItemList.get(i).getServitemname().toLowerCase());
+				System.out.println(service3.ItemList.get(i).getServitemname().toLowerCase());
+			}
+			itemCBG.setItems(itemNames);
+			itemCBG.setVisible(false);
+			itemGrid.setVisible(false);
+			comfirm.setVisible(false);
+		});
+		//view all
+		viewall.addClickListener(e->{
+			itemCBG.setVisible(true);
+			itemGrid.setVisible(true);
+			comfirm.setVisible(true);
+			listGrid.setVisible(false);
+			form2.setVisible(false);
+		});
 		finish.addClickListener(e->{
 			MyUI.navigateTo("home");
 		});

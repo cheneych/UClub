@@ -18,17 +18,22 @@ import raymond.TestDB.Pools.Names;
 import raymond.dataprovider.filter.StatementHelper;
 
 public class RoomDataService extends DataService<Room> {
-	public static ArrayList<Room> roomList = new ArrayList<Room>();
+	public ArrayList<Room> roomList = new ArrayList<Room>();
+	
+	public RoomDataService() {
+		super(Pools.getConnectionPool(Names.RAYMOND));
+	}
+	
 	public RoomDataService(String st) {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		//System.out.println("enter ser");
 		try (Connection conn = dataSource.getConnection()) {
-			try (PreparedStatement stmt = conn.prepareStatement("SELECT FRNAME FROM SFRDT")) {
+			try (PreparedStatement stmt = conn.prepareStatement("SELECT FRNAME,FRSPRID FROM SFRDT")) {
 				try (ResultSet rs = stmt.executeQuery()) {
 					while (rs.next()) {
 						 String str=getString(rs,1);
-						 System.out.println(str);
-						 roomList.add(new Room(str));
+						 int tmp=getInteger(rs,2);
+						 roomList.add(new Room(str,tmp));
 					}
 				}
 			}
@@ -151,7 +156,7 @@ public class RoomDataService extends DataService<Room> {
 
 	public String storeRow(Connection conn, Room row) throws SQLException {
 
-		try (CallableStatement call = conn.prepareCall("{ ? = call core.Room(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
+		try (CallableStatement call = conn.prepareCall("{ ? = call pk.PACK_F(?) }")) {
 
 			int x = 1;
 			call.registerOutParameter(x++, Types.VARCHAR);
@@ -159,7 +164,7 @@ public class RoomDataService extends DataService<Room> {
 //			setTimestamp(call, x++, row.getDay());
 //			setTimestamp(call, x++, row.getStartTime());
 //			setTimestamp(call, x++, row.getEndTime());
-//			setString(call, x++, row.getEvtName());
+			setString(call, x++, row.getRoom());
 			//setString(call, x++, row.getRoom());
 
 			call.executeUpdate();
@@ -172,7 +177,8 @@ public class RoomDataService extends DataService<Room> {
 		try (Connection conn = dataSource.getConnection()) {
 			String s = storeRow(conn, row);
 			conn.commit();
-			return get(conn, s);
+			//return get(conn, s);
+			return null;
 		}
 	}
 }

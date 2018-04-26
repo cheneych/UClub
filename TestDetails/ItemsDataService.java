@@ -21,12 +21,12 @@ import raymond.TestDB.Pools.Names;
 import raymond.TestReserve.Room;
 
 public class ItemsDataService extends DataService<Items> {
-	public static ArrayList<Items> ItemList = new ArrayList<Items>();
+	public ArrayList<Items> ItemList = new ArrayList<Items>();
 	public ItemsDataService(int id) {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		//System.out.println("enter ser");
 		String sqlStr = "select servitemid,servtype,servmenutype,servitemname,servitemchrg,servitemcost,servsu,inventoried,taxid,quantitydefault,itemflag,webavail,servitemorder from servsetup where servtype="+id;
-		ItemList.clear();
+//		ItemList.clear();
 		try (Connection conn = dataSource.getConnection()) {
 			try (PreparedStatement stmt = conn.prepareStatement(sqlStr)) {
 				try (ResultSet rs = stmt.executeQuery()) {
@@ -37,7 +37,7 @@ public class ItemsDataService extends DataService<Items> {
 						c.setServitemid(getInteger(rs, i++));
 						c.setServtype(getInteger(rs,i++));
 						c.setServmenutype(getInteger(rs, i++));
-						c.setServitemname(getString(rs,i++));
+						c.setServitemname(getString(rs,i++).toLowerCase());
 						c.setServitemchrg(getBigDecimal(rs,i++));
 						c.setServitemcost(getBigDecimal(rs,i++));
 						c.setServsu(getBigDecimal(rs,i++));
@@ -47,6 +47,8 @@ public class ItemsDataService extends DataService<Items> {
 						c.setItemflag(getInteger(rs,i++));
 						c.setWebavail(getString(rs,i++));
 						c.setServitemorder(getInteger(rs,i++));
+						c.setQty(0);
+						c.setTotal(0.0);
 						ItemList.add(c);
 					}
 				}

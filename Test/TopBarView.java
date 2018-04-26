@@ -100,6 +100,8 @@ public abstract class TopBarView extends VerticalLayout implements View {
 		signout1.setCommand(new Command() {
 			public void menuSelected(MenuItem selectedItem) {
 				MyUI.navigateTo("login");
+				//clear pools
+				
 			}
 		});
 		

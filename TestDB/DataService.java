@@ -179,54 +179,6 @@ public abstract class DataService<T> {
 		return list.stream();
 	}
 	
-	public Stream<Room> fetch(Query<T, Filter> query,String s) {
-		logger.error("enter f");
-		ArrayList<T> list = new ArrayList<T>();
-		
-		StatementHelper statementHelper = new StatementHelper();
-		try (Connection conn = dataSource.getConnection()) {
-			try (PreparedStatement stmt = conn.prepareStatement(getSQL(query, statementHelper))) {
-				
-				statementHelper.setParameterValuesToStatement(stmt);
-				
-				try (ResultSet rs = stmt.executeQuery()) {
-					while (rs.next()) {
-						 getRow(rs);
-					}
-				}
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error("Unable to fetch results", e);
-		}
-		return (RoomDataService.roomList).stream();
-	}
-	
-	public int count(Query<T, Filter> query,String s) {
-
-		StatementHelper statementHelper = new StatementHelper();
-		try (Connection conn = dataSource.getConnection()) {
-			try (PreparedStatement stmt = conn.prepareStatement(getRowCountSQL(query, statementHelper))) {
-				
-				statementHelper.setParameterValuesToStatement(stmt);
-
-				try (ResultSet rs = stmt.executeQuery()) {
-
-					if (rs.next()) {
-						int x = rs.getInt(1);
-						logger.debug("count = {}", x);
-						return 32;
-					}
-				}
-			}
-
-		} catch (SQLException e) {
-			logger.error("Unable to count results", e);
-		}
-
-		return 32;
-	}
 	
 	public int count(Query<T, Filter> query) {
 

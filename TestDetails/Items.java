@@ -17,6 +17,25 @@ public class Items {
 	private String webavail;
 	private int servitemorder;
 	
+	private int qty;
+	private double total;
+	
+	public int getQty() {
+		return qty;
+	}
+
+	public void setQty(int qty) {
+		this.qty = qty;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
 	public Items() {
 		
 	}

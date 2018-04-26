@@ -28,7 +28,7 @@ public class Pools {
 	public static final String raymondDBConnectionString = "jdbc:oracle:thin:@//128.206.190.72:1521/projex4.projex4db.cf.missouri.edu";
 	public static final String raymondUserName = "raymond";
 	public static final String raymondUserPassword = "Camgyc58";
-	public static final int raymondMaxConnections = 40;
+	public static final int raymondMaxConnections = 5;
 
 	public static String psHRDBConnectionString = "jdbc:oracle:thin:@//128.206.191.191:1521/cfapps.appdb.cf.missouri.edu";
 	private static final String psHRUserName = "muop_ps";

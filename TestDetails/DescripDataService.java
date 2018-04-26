@@ -20,12 +20,12 @@ import raymond.TestDB.Pools.Names;
 import raymond.TestReserve.Room;
 
 public class DescripDataService  extends DataService<Category> {
-	public static ArrayList<Descrip> DesList = new ArrayList<Descrip>();
+	public ArrayList<Descrip> DesList = new ArrayList<Descrip>();
 	
 	public DescripDataService(int id) {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		String sqlStr = "select servtypeid,servtype,headertype,servtypeorder,webavail from servtype where headertype="+id;
-		DesList.clear();
+		//DesList.clear();
 		try (Connection conn = dataSource.getConnection()) {
 			try (PreparedStatement stmt = conn.prepareStatement(sqlStr)) {
 				try (ResultSet rs = stmt.executeQuery()) {

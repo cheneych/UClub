@@ -20,12 +20,12 @@ import raymond.TestDB.Pools.Names;
 import raymond.TestReserve.Room;
 
 public class CategoryDataService extends DataService<Category> {
-	public static ArrayList<Category> CateList = new ArrayList<Category>();
+	public ArrayList<Category> CateList = new ArrayList<Category>();
 	public CategoryDataService() {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		//System.out.println("enter ser");
 		String sqlStr = "select headertypeid,headerdesc,taxid,servpictkey,webitem from headertypes";
-		CateList.clear();
+//		CateList.clear();
 		
 		try (Connection conn = dataSource.getConnection()) {
 			try (PreparedStatement stmt = conn.prepareStatement(sqlStr)) {

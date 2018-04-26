@@ -2,14 +2,17 @@ package raymond.TestReserve;
 
 public class Room {
 	private String room;
+	private int frsprid;
+
 	private Boolean a4,a5,a6,a7,a8,a9,a10,a11,a12,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,a1,a2,a3;
 
 	public Room() {
 
 	}
 
-	public Room(String room) {
+	public Room(String room,int frsprid) {
 		this.room=room;
+		this.frsprid=frsprid;
 		this.a4=false;
 		this.a5=false;
 		this.a6=false;
@@ -35,7 +38,15 @@ public class Room {
 		this.a2=false;
 		this.a3=false;
 	}
+	
+	public int getFrsprid() {
+		return frsprid;
+	}
 
+	public void setFrsprid(int frsprid) {
+		this.frsprid = frsprid;
+	}
+	
 	public String getRoom() {
 		return room;
 	}
