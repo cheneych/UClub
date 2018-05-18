@@ -24,15 +24,15 @@ public class OrderDataService extends DataService<Order> {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		//System.out.println("enter ser");
 		if (attr.equals("date"))
-			sqlQuery = "select evtstart2 as day,custname as customer, evtname as name from(((custt left join event  on custt.custid=event.custid))) WHERE (to_char(evtstart2,'YYYY-MM-DD'))='"+s+"'";
+			sqlQuery = "select evtstart2 as day,custname as customer, evtname as name, custt.id from(((custt left join event  on custt.custid=event.custid))) WHERE (to_char(evtstart2,'YYYY-MM-DD'))='"+s+"'";
 		else if (attr.equals("customer")) {
 			char c=0;
 			if (s.length()>0) {
 				c=s.charAt(0);
 			if (c>='0' && c<='9')
-				sqlQuery = "select evtstart2 as day, custname as customer,evtname as name from (((custt left join event  on custt.custid=event.custid))) WHERE event.CUSTID="+s;
+				sqlQuery = "select evtstart2 as day, custname as customer,evtname as name,custt.id from (((custt left join event  on custt.custid=event.custid))) WHERE event.CUSTID="+s;
 			else
-				sqlQuery = "select evtstart2 as day,custname as customer ,evtname as name from (((custt left join event  on custt.custid=event.custid)))" + " WHERE CUSTNAME="+"'"+s+"'";
+				sqlQuery = "select evtstart2 as day,custname as customer ,evtname as name,custt.id from (((custt left join event  on custt.custid=event.custid)))" + " WHERE CUSTNAME="+"'"+s+"'";
 		}
 		}
 	}
@@ -47,8 +47,8 @@ public class OrderDataService extends DataService<Order> {
 //		u.setStartTime(getLocalTime(rs, i++));
 //		u.setEndTime(getLocalTime(rs, i++));
 		u.setEvtName(getString(rs, i++));
+		u.setId(getInteger(rs,i++));
 		//u.setRoom(getString(rs, i++));
-
 		return u;
 
 	}

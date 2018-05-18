@@ -280,8 +280,6 @@ public class ContextListener implements ServletContextListener {
 		pools.shutdown();
 
 	}
-
-	final static Pools pools = new Pools();
 	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
@@ -290,7 +288,7 @@ public class ContextListener implements ServletContextListener {
 			logger.debug("Context Listener contextInitialized Called.");
 		}
 		
-		
+		Pools pools = new Pools();
 		
 		event.getServletContext().setAttribute("POOLS", pools);
 //

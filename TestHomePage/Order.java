@@ -10,6 +10,7 @@ public class Order {
 	private LocalTime endTime;
 	private String evtName;
 	private String custName;
+	private int id;
 	//private String room;
 	//private OrderStatus status;
 	
@@ -67,6 +68,16 @@ public class Order {
 	public void setEvtName(String evtName) {
 		this.evtName = evtName;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
 
 	//	public String getRoom(){
 //		return room;

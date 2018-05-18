@@ -12,6 +12,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
@@ -131,6 +132,12 @@ public class HomeView extends TopBarView implements View {
 			grid.setVisible(true);
 		});
 		
+		grid.asSingleSelect().addValueChangeListener(e->{
+			VaadinService.getCurrentRequest().getWrappedSession()
+						 .setAttribute("custid",grid.asSingleSelect().getValue().getId());
+			MyUI.navigateTo("info"); 
+		});
+		
 	}
 
 	private void dataProcess() {
@@ -141,7 +148,8 @@ public class HomeView extends TopBarView implements View {
 		customer.setWidth("300px");
 
 		//grid
-		grid.setColumns("evtName","custName","day");
+		grid.setColumns("evtName","custName","day","id");
+		grid.getColumn("id").setHidden(true);
 		grid.setVisible(false);
 		grid.setSizeFull();
 		grid.setWidth("1000px");

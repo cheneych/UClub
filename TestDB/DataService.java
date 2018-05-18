@@ -156,6 +156,7 @@ public abstract class DataService<T> {
 	public abstract T getRow(ResultSet rs) throws SQLException;
 
 	public Stream<T> fetch(Query<T, Filter> query) {
+		System.out.println("enter");
 		logger.error("enter f");
 		ArrayList<T> list = new ArrayList<T>();
 		
