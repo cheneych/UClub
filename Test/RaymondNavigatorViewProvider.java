@@ -7,6 +7,7 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewProvider;
 import raymond.Login.LoginView;
+import raymond.MoreInfo.moreInfoView;
 import raymond.TestDetails.*;
 import raymond.TestHomePage.*;
 import raymond.TestInfo.InfoView;
@@ -49,6 +50,8 @@ public class RaymondNavigatorViewProvider implements ViewProvider {
 			return new LoginView();
 		case "info":
 			return new InfoView();
+		case "newinfo":
+			return new moreInfoView();
 		default:
 			logger.error("Unable to determine view");
 			return null;

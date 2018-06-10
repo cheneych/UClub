@@ -1,8 +1,11 @@
 package raymond.TestReserve;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,10 +43,8 @@ public class ReservationView extends TopBarView implements View {
 	//Components
 	Label DAT = new Label("Date & Time");
 
-	TextField booking=new TextField("Booking");
-	TextField cName=new TextField("Custormer Name");
-	TextField dates=new TextField("Dates");
-	TextField nPhone=new TextField("Phone Number");
+	TextField customer=new TextField("Customer");
+	TextField sales=new TextField("Salesperson");
 	
 	
 	TreeGrid<Room> treeGrid=new TreeGrid<>();
@@ -52,16 +53,19 @@ public class ReservationView extends TopBarView implements View {
 
 	DateTimeField sDate = new DateTimeField("Start Time", LocalDateTime.now());
 	DateTimeField eDate = new DateTimeField("End Time", LocalDateTime.now());
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	Button button=new Button("Search Rooms");
 	Button nStep=new Button("Next Step");
 	Button comfirm=new Button("Comfirm");
+	Button more=new Button("Add more Info");
 
 	FormLayout form1=new FormLayout();
-	FormLayout form2=new FormLayout();
 	
 	boolean b=false;
 	int id=-1;
+	
+	LocalDateTime startdatetime, enddatetime;
 	
 	public ArrayList<Room> roomList = new ArrayList<Room>();
 
@@ -79,7 +83,7 @@ public class ReservationView extends TopBarView implements View {
 		final HorizontalLayout layout2=new HorizontalLayout();
 		layout1.addComponents(sDate,eDate);
 		layout4.addComponents(DAT,layout1);
-		layout2.addComponents(form1,form2,layout4,nStep);
+		layout2.addComponents(form1,more,layout4,nStep);
 		layout2.setSizeFull();
 		layout2.setComponentAlignment(nStep, Alignment.MIDDLE_RIGHT);
 		//third layer
@@ -222,15 +226,20 @@ public class ReservationView extends TopBarView implements View {
 			return "red";
 		});
 		//form1
-		form1.addComponents(booking,cName);
-		form2.addComponents(dates,nPhone);
+		form1.addComponents(customer,sales);
 	}
 
 	private void eventProcess() {
+		
+		more.addClickListener(e->{
+			MyUI.navigateTo("newinfo");
+		});
+		//search rooms
 		button.addClickListener(e->{
 			if (sDate.getValue().toLocalDate().equals(eDate.getValue().toLocalDate())) {
 				RoomDataService service = new RoomDataService(sDate.getValue().toLocalDate().toString());
 				int pre=-1,id=-1;
+				data.clear(); //need to be cleared, otherwise room size will add 32 each time
 				for (int i=0;i<service.roomList.size();i++) {
 					if (service.roomList.get(i).getFrsprid()!=pre) {
 						data.addItems(null, service.roomList.get(i));
@@ -240,9 +249,10 @@ public class ReservationView extends TopBarView implements View {
 						data.addItems(service.roomList.get(id), service.roomList.get(i));
 					}
 				}
+				roomList.clear();  //need to be cleared, otherwise room size will add 32 each time
+				roomList.addAll(service.roomList); 
 				dataProvider.refreshAll();
 				treeGrid.setVisible(true);
-				roomList.addAll(service.roomList);
 			}
 		});
 
@@ -264,7 +274,8 @@ public class ReservationView extends TopBarView implements View {
 				//update datebase
 				RoomDataService service = new RoomDataService();
 				try {
-					service.storeRow(roomList.get(id));
+					System.out.println("comfirm "+"startdatetime:"+startdatetime+"enddatetime:"+enddatetime+"roomid:"+id);
+					service.storeRow(startdatetime,enddatetime,id-1);
 					id=-1;
 				} catch (SQLException e1) {
 					e1.printStackTrace();
@@ -284,11 +295,15 @@ public class ReservationView extends TopBarView implements View {
 					String s=ts.toString();
 					s=s.substring(0,s.indexOf(':'));
 					int ks=Integer.parseInt(s);
+					String tmpstarttime=sDate.getValue().toLocalDate().toString()+" "+s+":00:00";
+					startdatetime = LocalDateTime.parse(tmpstarttime, formatter);
 					
 					LocalTime te=eDate.getValue().toLocalTime();
 					String s2=te.toString();
 					s2=s2.substring(0,s2.indexOf(':'));
 					int ke=Integer.parseInt(s2)+1;
+					String tmpendtime=sDate.getValue().toLocalDate().toString()+" "+Integer.toString(ke)+":00:00";
+					enddatetime = LocalDateTime.parse(tmpendtime, formatter);
 					
 					for (int i=ks;i<=ke;i++) {
 						if (roomList.get(j).getA1() && ks<=1 && ke>=1) {

@@ -11,6 +11,8 @@ public class Order {
 	private String evtName;
 	private String custName;
 	private int id;
+	private int evtid;
+	private int fid;
 	//private String room;
 	//private OrderStatus status;
 	
@@ -28,6 +30,14 @@ public class Order {
 //		this.status=status;
 	}
 	
+	public int getEvtid() {
+		return evtid;
+	}
+
+	public void setEvtid(int evtid) {
+		this.evtid = evtid;
+	}
+
 	
 	public String getCustName() {
 		return custName;
@@ -76,6 +86,16 @@ public class Order {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public int getFid() {
+		return fid;
+	}
+
+	public void setFid(int fid) {
+		this.fid = fid;
+	}
+	
+	
 	
 	
 

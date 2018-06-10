@@ -38,7 +38,7 @@ public class Room {
 		this.a2=false;
 		this.a3=false;
 	}
-	
+
 	public int getFrsprid() {
 		return frsprid;
 	}

@@ -56,6 +56,7 @@ public class InfoView extends TopBarView implements View {
 	TextField status=new TextField("Status");
 	TextField confirmDt=new TextField("Confirm Date");
 	TextField dt=new TextField("Date");	
+	Button evt_modify=new Button("Modify");
 	//basic info
 		//customer
 	Label cusInfo=new Label("Basic Info");
@@ -94,6 +95,7 @@ public class InfoView extends TopBarView implements View {
 	TextField room=new TextField("Room(s)");
 	TextField sec=new TextField("Section(s)");
 	TextArea notes=new TextArea("Function Notes");
+	Button room_modify=new Button("Modify");
 	
 	public InfoView()  {
 		init();
@@ -102,7 +104,7 @@ public class InfoView extends TopBarView implements View {
 	public void init()  {
 		eventProcess();
 		dataProcess();
-		GridLayout grid=new GridLayout(2,6);
+		GridLayout grid=new GridLayout(3,7);
 		grid.addComponent(uc,0,0);
 		grid.addComponent(dt,0,3);
 		grid.addComponent(status,0,4);
@@ -113,6 +115,8 @@ public class InfoView extends TopBarView implements View {
 		grid.addComponent(funcName,1,3);
 		grid.addComponent(functPost,1,4);
 		grid.addComponent(funcId,1,5);
+		grid.addComponent(evt_modify,2,6);
+
 		tabsheet.addTab(grid,"Evt Info");
 		
 		VerticalLayout tab2=new VerticalLayout();
@@ -136,7 +140,7 @@ public class InfoView extends TopBarView implements View {
 		tabsheet.addTab(tab3,"Sales Info");
 		
 		VerticalLayout tab4=new VerticalLayout();
-//		tab4.addComponents();
+		tab4.addComponents(room_modify);
 		tabsheet.addTab(tab4,"Room Info");
 		
 		VerticalLayout tab5=new VerticalLayout();
@@ -150,7 +154,14 @@ public class InfoView extends TopBarView implements View {
 	}
 
 	private void eventProcess(){	
-		
+		//event
+		evt_modify.addClickListener(e->{
+			MyUI.navigateTo("newinfo");
+		});
+		//room
+		room_modify.addClickListener(e->{
+			MyUI.navigateTo("reservation");
+		});
 	}
 
 	private void dataProcess() {
@@ -175,6 +186,9 @@ public class InfoView extends TopBarView implements View {
 		zipb.setValue(service.u.getBzip());
 		countryb.setValue(service.u.getBcountry());
 		mail.setValue(service.u.getMail());
+		//evt
+	
+		
 	}
 	
 //	public String filter(Object s) {

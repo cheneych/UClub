@@ -1,5 +1,6 @@
 package raymond.TestHomePage;
 
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -45,7 +46,7 @@ public class HomeView extends TopBarView implements View {
 	private Button dt=new Button("Search by Date");
 	private Button cus=new Button("Search by Customer");
 
-	TextField member=new TextField("member #");
+	TextField member=new TextField("Customer ID");
 	TextField customer=new TextField();
 	//TextField booking=new TextField("Booking Description");
 
@@ -105,23 +106,35 @@ public class HomeView extends TopBarView implements View {
 		});        
 
 		reserve.addClickListener(e->{
-			MyUI.navigateTo("reservation"); 
+			String custid = member.getValue();
+			if (!custid.equals("")) {
+				IsValidCusService service = new IsValidCusService(custid);
+				int count=service.getData();
+				if (count == 1) {
+					//set custid in session
+					VaadinService.getCurrentRequest().getWrappedSession().setAttribute("cur_custid",custid);
+					//insert into evt
+					try {
+						service.storeRow(custid);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					//redirect
+					MyUI.navigateTo("reservation"); 
+				}
+			}
+			else {
+				//should be changed to pop up window later, now just for test purpose
+				System.out.println("popup window");
+				MyUI.navigateTo("reservation"); 
+			}
 		});
 		
 		date.addValueChangeListener(e->{
-//			List<Order> newOrders=new ArrayList<>();
 			String s=e.getValue().toString();
 			System.out.println(s);
-//			for (Order o:orders) {
-//				if (o.getDay().equals(s)) {
-//					newOrders.add(o);
-//				}
-//			}
-//			grid.setItems(newOrders);
 			OrderDataService service = new OrderDataService(s,"date");
 			grid.setDataProvider(service.getDataProvider());
-			//grid.setColumns("evtName","custName");
-
 		});
 		
 		customer.addValueChangeListener(e->{
@@ -134,7 +147,11 @@ public class HomeView extends TopBarView implements View {
 		
 		grid.asSingleSelect().addValueChangeListener(e->{
 			VaadinService.getCurrentRequest().getWrappedSession()
-						 .setAttribute("custid",grid.asSingleSelect().getValue().getId());
+			 .setAttribute("custid",grid.asSingleSelect().getValue().getId());
+			VaadinService.getCurrentRequest().getWrappedSession()
+			 .setAttribute("evtid_modify",grid.asSingleSelect().getValue().getEvtid());
+			VaadinService.getCurrentRequest().getWrappedSession()
+			 .setAttribute("fid_modify",grid.asSingleSelect().getValue().getFid());
 			MyUI.navigateTo("info"); 
 		});
 		
@@ -142,14 +159,16 @@ public class HomeView extends TopBarView implements View {
 
 	private void dataProcess() {
 		//textfield
-		member.setPlaceholder("Type member #");
+		member.setPlaceholder("Type Customer ID");
 		customer.setVisible(false);
 		customer.setPlaceholder("Type customer ID or Name");
 		customer.setWidth("300px");
 
 		//grid
-		grid.setColumns("evtName","custName","day","id");
+		grid.setColumns("evtName","custName","day","id","evtid","fid");
 		grid.getColumn("id").setHidden(true);
+		grid.getColumn("evtid").setHidden(true);
+		grid.getColumn("fid").setHidden(true);
 		grid.setVisible(false);
 		grid.setSizeFull();
 		grid.setWidth("1000px");

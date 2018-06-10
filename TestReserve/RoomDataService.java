@@ -6,11 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import com.vaadin.data.Result;
+import com.vaadin.server.VaadinService;
 
 import raymond.TestDB.DataService;
 import raymond.TestDB.Pools;
@@ -28,7 +30,7 @@ public class RoomDataService extends DataService<Room> {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		//System.out.println("enter ser");
 		try (Connection conn = dataSource.getConnection()) {
-			try (PreparedStatement stmt = conn.prepareStatement("SELECT FRNAME,FRSPRID FROM SFRDT")) {
+			try (PreparedStatement stmt = conn.prepareStatement("SELECT FRNAME, FRSPRID FROM SFRDT")) {
 				try (ResultSet rs = stmt.executeQuery()) {
 					while (rs.next()) {
 						 String str=getString(rs,1);
@@ -154,28 +156,30 @@ public class RoomDataService extends DataService<Room> {
 		return list;
 	}
 
-	public String storeRow(Connection conn, Room row) throws SQLException {
-
-		try (CallableStatement call = conn.prepareCall("{ ? = call pk.PACK_F(?) }")) {
-
+	public void storeRow(Connection conn, LocalDateTime starttime, LocalDateTime endtime, int id) throws SQLException {
+		int fid=(int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
+		System.out.println("store:"+fid);
+		
+		try (CallableStatement call = conn.prepareCall("{call TEST.add_room_start_end_time(?,?,?) }")) {
 			int x = 1;
-			call.registerOutParameter(x++, Types.VARCHAR);
-
-//			setTimestamp(call, x++, row.getDay());
-//			setTimestamp(call, x++, row.getStartTime());
-//			setTimestamp(call, x++, row.getEndTime());
-			setString(call, x++, row.getRoom());
-			//setString(call, x++, row.getRoom());
-
+			setString(call, x++, fid);
+			setTimestamp(call, x++, starttime);
+			setTimestamp(call, x++, endtime);
 			call.executeUpdate();
-			return call.getString(1);
+		}
+		
+		try (CallableStatement call = conn.prepareCall("{call TEST.add_room_occupied(?,?) }")) {
+			int x = 1;
+			setString(call, x++, id);
+			setString(call, x++, fid);
+			call.executeUpdate();
 		}
 
 	}
 
-	public Result<Room> storeRow(Room row) throws SQLException {
+	public Result<Room> storeRow(LocalDateTime starttime, LocalDateTime endtime, int id) throws SQLException {
 		try (Connection conn = dataSource.getConnection()) {
-			String s = storeRow(conn, row);
+			 storeRow(conn, starttime, endtime, id);
 			conn.commit();
 			//return get(conn, s);
 			return null;
