@@ -61,4 +61,27 @@ BEGIN
  	INSERT (A.FRID, A.FUNCTID) VALUES (id, fid);
 END;
 
+
+PROCEDURE add_items (fid in NUMBER, catogory in NUMBER, timeid in NUMBER, unitcost in NUMBER, 
+					 totalcost in NUMBER, qty in NUMBER, itemid in NUMBER, subcatogory in  NUMBER
+					) IS
+BEGIN
+	INSERT INTO servitems (functid, headertypeid, servtimeid, servitemchrg, servitemcost,
+						   servitemqty, itemsetupid, servtype) 
+	VALUES                (fid,     catogory,     timeid,     unitcost,     totalcost,
+		                   qty,         itemid,      subcatogory);
+END;
+
+
+FUNCTION add_time (fid in NUMBER, catogory in NUMBER, starttime in DATE, endtime in DATE) 
+RETURN NUMBER IS
+NID NUMBER;
+BEGIN
+	INSERT INTO servtime (functid, headertype, servtime2, servendtime2)
+	VALUES               (fid,     catogory,   starttime, endtime);
+	SELECT servtime_sequence.CURRVAL INTO NID FROM dual;
+	RETURN NID;
+END;
+
+
 END TEST;
