@@ -1,12 +1,24 @@
 package raymond.TestDetails;
 
+import org.apache.commons.lang3.time.DateUtils;
+
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.gargoylesoftware.htmlunit.javascript.host.intl.DateTimeFormat;
 import com.vaadin.data.Binder;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.icons.VaadinIcons;
@@ -197,14 +209,46 @@ public class DetailsView extends TopBarView implements View {
 			//System.out.println(itemCBG.getSelectedItems().size());
 			if (itemCBG.getSelectedItems().size()>0)
 				lists.add(new Lists(cato.getValue(),serv.getValue(),sDate.getValue(),eDate.getValue(),listnxt++));
-			itemCBG.deselectAll();
 			
 			listGrid.setVisible(true);
 			listGrid.setItems(lists);
 			
 			comfirm.setVisible(false);
 			form.setVisible(false);
+			//first insert into db: servtime
+			//1 get start&end time in the webpage & standardize them 
+			LocalDateTime starttime = sDate.getValue().truncatedTo(ChronoUnit.HOURS);
+			LocalDateTime endtime = eDate.getValue().plusHours(1).truncatedTo(ChronoUnit.HOURS);
+			//2 get catogoryid and subcatogoryid in the webpage
+			int catid = 0, subcatid = 0, timeid = 0;
+			for (int i=0; i<service.CateList.size(); i++) {
+				if (service.CateList.get(i).getHeaderdesc().equals(cato.getValue())) {
+					catid = service.CateList.get(i).getHeadertypeid();
+					break;
+				}
+			}
+			for (int i=0; i<service2.DesList.size(); i++) {
+				if (service2.DesList.get(i).getServtype().equals(serv.getValue())) {
+					subcatid = service2.DesList.get(i).getServtypeid();
+					break;
+				}
+			}
+			//3 insert
+			try {
+				timeid = service.storeRow(catid,subcatid,starttime,endtime);
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			
+			//second insert servitems
+			System.out.println("size:"+" "+itemsAll.size());
+			try {
+				service3.storeRow(itemsAll,subcatid,catid,timeid);
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			//Reset items
+			itemCBG.deselectAll();
 			itemsAll.clear();
 			itemList.clear();
 			update();

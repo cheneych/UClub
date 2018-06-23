@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.vaadin.data.Result;
+import com.vaadin.data.Result;import com.vaadin.server.VaadinService;
 
 import raymond.TestDB.DataService;
 import raymond.TestDB.Pools;
@@ -101,28 +101,29 @@ public class CategoryDataService extends DataService<Category> {
 		return list;
 	}
 
-	public String storeRow(Connection conn, Category row) throws SQLException {
-
-		try (CallableStatement call = conn.prepareCall("{ ? = call core.Category(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
-
+	public int storeRow(Connection conn, int catid, LocalDateTime starttime, LocalDateTime endtime) throws SQLException {
+		int timeid = -1;
+		try (CallableStatement call = conn.prepareCall("{? =  call test.add_time(?, ?, ?, ?) }")) {
 			int x = 1;
-			call.registerOutParameter(x++, Types.VARCHAR);
-
-//			setTimestamp(call, x++, row.getDay());
-//			setString(call,x++,row.getCustName());
-//			setString(call, x++, row.getEvtName());
-
+			int fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
+			call.registerOutParameter(x++, Types.NUMERIC);
+			setString(call, x++, fid);
+			setString(call, x++, catid);
+			setTimestamp(call, x++, starttime);
+			setTimestamp(call, x++, endtime);
 			call.executeUpdate();
-			return call.getString(1);
+			timeid = call.getInt(1);
 		}
+		System.out.println(timeid+"\n");
+		return timeid;
 
 	}
 
-	public Result<Category> storeRow(Category row) throws SQLException {
+	public int storeRow(int catid, int subcatid, LocalDateTime starttime, LocalDateTime endtime) throws SQLException {
 		try (Connection conn = dataSource.getConnection()) {
-			String s = storeRow(conn, row);
+			int timeid = storeRow(conn, catid,starttime,endtime);
 			conn.commit();
-			return get(conn, s);
+			return timeid;
 		}
 	}
 }

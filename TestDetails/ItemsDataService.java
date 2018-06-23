@@ -12,8 +12,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.vaadin.data.Result;
+import com.vaadin.server.VaadinService;
 
 import raymond.TestDB.DataService;
 import raymond.TestDB.Pools;
@@ -111,28 +113,30 @@ public class ItemsDataService extends DataService<Items> {
 		return list;
 	}
 
-	public String storeRow(Connection conn, Items row) throws SQLException {
-
-		try (CallableStatement call = conn.prepareCall("{ ? = call core.Items(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
-
-			int x = 1;
-			call.registerOutParameter(x++, Types.VARCHAR);
-
-//			setTimestamp(call, x++, row.getDay());
-//			setString(call,x++,row.getCustName());
-//			setString(call, x++, row.getEvtName());
-
-			call.executeUpdate();
-			return call.getString(1);
+	public void storeRow(Connection conn, List<Items> itemsAll, int subcatid, int catid, int timeid) throws SQLException {
+		int fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
+		System.out.println("here"+" "+itemsAll.size());
+		for (int i=0; i<itemsAll.size(); i++) {
+			try (CallableStatement call = conn.prepareCall("{ call test.add_items(?, ?, ?, ?, ?, ?, ?, ?) }")) {
+				int x = 1;
+				setString(call, x++, fid);
+				setString(call, x++, catid);
+				setString(call, x++, timeid);
+				setString(call, x++, itemsAll.get(i).getServitemchrg());
+				setString(call, x++, itemsAll.get(i).getTotal());
+				setString(call, x++, itemsAll.get(i).getQty());
+				setString(call, x++, itemsAll.get(i).getServitemid());
+				setString(call, x++, subcatid);
+				call.executeUpdate();
+			}
 		}
-
+		System.out.println("pass items!");
 	}
 
-	public Result<Items> storeRow(Items row) throws SQLException {
+	public void storeRow(List<Items> itemsAll, int subcatid, int catid, int timeid) throws SQLException {
 		try (Connection conn = dataSource.getConnection()) {
-			String s = storeRow(conn, row);
+			storeRow(conn, itemsAll, subcatid, catid, timeid);
 			conn.commit();
-			return get(conn, s);
 		}
 	}
 }

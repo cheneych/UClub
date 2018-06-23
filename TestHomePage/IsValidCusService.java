@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Date;
 
 import com.vaadin.data.Result;
+import com.vaadin.server.VaadinService;
+
 import raymond.TestDB.DataService;
 import raymond.TestDB.Pools;
 import raymond.TestDB.Pools.Names;
@@ -66,14 +68,16 @@ public class IsValidCusService extends DataService<Integer>{
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date)); 
-		try (CallableStatement call = conn.prepareCall("{call TEST.create_res(?,?) }")) {
+		try (CallableStatement call = conn.prepareCall("{? = call TEST.create_res(?,?) }")) {
 
 			int x = 1;
-			//call.registerOutParameter(x++, Types.VARCHAR);
+			call.registerOutParameter(x++, Types.NUMERIC);
 			setString(call, x++, custid);
 			setTimestamp(call, x++, date);
 			call.executeUpdate();
-			//return call.getString(1);
+			System.out.println(call.getInt(1));
+			VaadinService.getCurrentRequest().getWrappedSession()
+			 .setAttribute("evtid_create",call.getInt(1));
 		}
 	}
 

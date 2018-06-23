@@ -157,7 +157,12 @@ public class RoomDataService extends DataService<Room> {
 	}
 
 	public void storeRow(Connection conn, LocalDateTime starttime, LocalDateTime endtime, int id) throws SQLException {
-		int fid=(int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
+		int fid = -1;
+		int create_or_modify = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("create_or_modify");
+		if (create_or_modify == 1)
+			fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
+		else 
+			fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
 		System.out.println("store:"+fid);
 		
 		try (CallableStatement call = conn.prepareCall("{call TEST.add_room_start_end_time(?,?,?) }")) {

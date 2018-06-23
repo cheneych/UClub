@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.gargoylesoftware.htmlunit.javascript.host.dom.Text;
@@ -24,6 +25,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TreeGrid;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.TabSheet;
@@ -32,11 +34,15 @@ import com.vaadin.ui.TextArea;
 import raymond.ui.standardgrid.StandardGridConfigurator;
 import raymond.Test.*;
 import raymond.TestDetails.Items;
+import raymond.TestDetails.ItemsForm;
 import raymond.TestHomePage.OrderDataService;
+import raymond.TestReserve.RoomDataService;
 import raymond.dataprovider.filter.Filter;
 
+import com.vaadin.data.TreeData;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.provider.TreeDataProvider;
 import com.vaadin.external.org.slf4j.Logger;
 import com.vaadin.external.org.slf4j.LoggerFactory;
 
@@ -96,6 +102,12 @@ public class InfoView extends TopBarView implements View {
 	TextField sec=new TextField("Section(s)");
 	TextArea notes=new TextArea("Function Notes");
 	Button room_modify=new Button("Modify");
+		//item info
+	ArrayList<Orderitems> order = new ArrayList<Orderitems>();
+	TreeGrid<Orderitems> treeGrid=new TreeGrid<>();
+	TreeDataProvider<Orderitems> dataProvider = (TreeDataProvider<Orderitems>) treeGrid.getDataProvider();
+	TreeData<Orderitems> data = dataProvider.getTreeData();
+	public OrderForm itemsform=new OrderForm(this);
 	
 	public InfoView()  {
 		init();
@@ -144,7 +156,7 @@ public class InfoView extends TopBarView implements View {
 		tabsheet.addTab(tab4,"Room Info");
 		
 		VerticalLayout tab5=new VerticalLayout();
-//		tab5.addComponents();
+		tab5.addComponents(treeGrid,itemsform);
 		tabsheet.addTab(tab5,"Items Info");
 		
 		VerticalLayout tab6=new VerticalLayout();
@@ -161,6 +173,15 @@ public class InfoView extends TopBarView implements View {
 		//room
 		room_modify.addClickListener(e->{
 			MyUI.navigateTo("reservation");
+		});
+		//items
+		treeGrid.asSingleSelect().addValueChangeListener(e->{
+			if (e.getValue()==null) {
+				itemsform.setVisible(false);
+			}else {
+				itemsform.setItems(e.getValue());
+				itemsform.setVisible(true);
+			}
 		});
 	}
 
@@ -187,8 +208,48 @@ public class InfoView extends TopBarView implements View {
 		countryb.setValue(service.u.getBcountry());
 		mail.setValue(service.u.getMail());
 		//evt
-	
 		
+		//items
+		itemsform.setVisible(false);
+		 //get related date from db
+		OrderitemsService iservice = new OrderitemsService(); iservice.getData();
+		headerService hservice = new headerService(); hservice.getHeader();
+		timeService tservice = new timeService(); tservice.getTime(); 
+		HashMap<Integer, Boolean> mp = new HashMap<Integer, Boolean>(); //id to headerdesc
+		HashMap<Integer, Orderitems> parent = new HashMap<Integer, Orderitems>();
+		 //put data in the new list
+		for (int i=0; i<iservice.order.size();i++) {
+			Orderitems tmp = iservice.order.get(i);
+			if (!mp.containsKey(tmp.getHeaderid())) { //headerid first appear
+				mp.put(tmp.getHeaderid(), true);
+				String starttime = tservice.stime.get(tmp.getTimeid());
+				String endtime = tservice.etime.get(tmp.getTimeid());
+				String header = hservice.header.get(tmp.getHeaderid());
+				order.add(new Orderitems(header, starttime, endtime));
+				parent.put(tmp.getHeaderid(), order.get(order.size()-1));
+			} 
+			order.add(new Orderitems(tmp.getId(), tmp.getHeaderid(), tmp.getItem(), tmp.getQty(), tmp.getCharge(), tmp.getTotal()));
+		}
+		 //create tree grid
+		for (int i=0; i<order.size(); i++) {
+			Orderitems tmp = order.get(i);
+			if (tmp.getService() == null) {
+				data.addItems(parent.get(tmp.getHeaderid()), tmp);
+			} else {
+				data.addItem(null, tmp);
+			}
+		}
+		//set columns of tree grid
+		treeGrid.addColumn(Orderitems::getService).setCaption("Service Name");
+		treeGrid.addColumn(Orderitems::getItem).setCaption("Item");
+		treeGrid.addColumn(Orderitems::getQty).setCaption("Qty");
+		treeGrid.addColumn(Orderitems::getCharge).setCaption("Charge");
+		treeGrid.addColumn(Orderitems::getTotal).setCaption("Total");
+		treeGrid.addColumn(Orderitems::getStarttime).setCaption("Start Time");
+		treeGrid.addColumn(Orderitems::getEndtime).setCaption("End Time");
+		//change size and refresh treegrid
+		treeGrid.setSizeFull();
+		dataProvider.refreshAll();
 	}
 	
 //	public String filter(Object s) {

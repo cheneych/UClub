@@ -69,7 +69,12 @@ public class MoreInfoDataService extends DataService<MoreInfo>{
 	}
 
 	public void storeRow(Connection conn, MoreInfo info) throws SQLException {
-		int evtid=(int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("evtid_modify");
+		int evtid = -1;
+		int create_or_modify = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("create_or_modify");
+		if (create_or_modify == 1)
+			evtid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("evtid_modify");
+		else 
+			evtid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("evtid_create");
 		
 		try (CallableStatement call = conn.prepareCall("{call TEST.add_info(?,?,?) }")) {
 			int x = 1;
@@ -79,9 +84,10 @@ public class MoreInfoDataService extends DataService<MoreInfo>{
 			call.executeUpdate();
 		}
 		
-		try (CallableStatement call = conn.prepareCall("{call TEST.add_func_info(?,?,?,?,?,?,?) }")) {
+		try (CallableStatement call = conn.prepareCall("{? = call TEST.add_func_info(?,?,?,?,?,?,?) }")) {
 			int x = 1;
 			System.out.println("evtid==="+evtid);
+			call.registerOutParameter(x++, Types.NUMERIC);
 			setString(call, x++, Integer.toString(evtid));
 			setString(call, x++, info.getfName());
 			setString(call, x++, info.getFuncpas());
@@ -90,6 +96,8 @@ public class MoreInfoDataService extends DataService<MoreInfo>{
 			setString(call, x++, info.getSet());
 			setString(call, x++, info.getStyid());
 			call.executeUpdate();
+			VaadinService.getCurrentRequest().getWrappedSession()
+			 .setAttribute("fid_create",call.getInt(1));
 		}
 	}
 

@@ -119,6 +119,8 @@ public class HomeView extends TopBarView implements View {
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
+					VaadinService.getCurrentRequest().getWrappedSession()
+					 .setAttribute("create_or_modify",0);
 					//redirect
 					MyUI.navigateTo("reservation"); 
 				}
@@ -152,6 +154,8 @@ public class HomeView extends TopBarView implements View {
 			 .setAttribute("evtid_modify",grid.asSingleSelect().getValue().getEvtid());
 			VaadinService.getCurrentRequest().getWrappedSession()
 			 .setAttribute("fid_modify",grid.asSingleSelect().getValue().getFid());
+			VaadinService.getCurrentRequest().getWrappedSession()
+			 .setAttribute("create_or_modify",1);
 			MyUI.navigateTo("info"); 
 		});
 		
