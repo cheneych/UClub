@@ -18,6 +18,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinService;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.GridLayout;
@@ -86,19 +87,18 @@ public class InfoView extends TopBarView implements View {
 	TextField countryb=new TextField("Country");
 	TextField cmail=new TextField("E-mail");
 		//salesperson
-	TextField contact=new TextField("Contact");
-	TextField osContact=new TextField("On-Site Contact");
-	TextField sPhone=new TextField("Phone");
+	TextField firstname=new TextField("FirstName");
+	TextField lastname=new TextField("LastName");
 	TextField mail=new TextField("E-mail");
-	TextField sPer=new TextField("SalesPerson");
-	TextField bookMgr=new TextField("Booking Mgr");
+	TextField title=new TextField("Title");
 		//room info
 	TextField st=new TextField("Start Time");
 	TextField et=new TextField("End Time");
-	TextField exp=new TextField("#Expected/Set");
+	TextField exp=new TextField("#Expected");
+	TextField act = new TextField("#Set");
 	TextField gua=new TextField("#Guaranteed");
 	TextField style=new TextField("Setup Style");
-	TextField room=new TextField("Room(s)");
+	ComboBox<String> room=new ComboBox<>("Room(s)");
 	TextField sec=new TextField("Section(s)");
 	TextArea notes=new TextArea("Function Notes");
 	Button room_modify=new Button("Modify");
@@ -107,6 +107,7 @@ public class InfoView extends TopBarView implements View {
 	TreeGrid<Orderitems> treeGrid=new TreeGrid<>();
 	TreeDataProvider<Orderitems> dataProvider = (TreeDataProvider<Orderitems>) treeGrid.getDataProvider();
 	TreeData<Orderitems> data = dataProvider.getTreeData();
+	Button items_modify = new Button("Add more items");
 	public OrderForm itemsform=new OrderForm(this);
 	
 	public InfoView()  {
@@ -146,17 +147,30 @@ public class InfoView extends TopBarView implements View {
 //		l5.addComponents(exp,gua,style,room, sec);
 		tab2.addComponents(cusInfo,l1,cusAdd1,l2,cusAdd2,l3,cusAct,l4);
 		tabsheet.addTab(tab2,"Customer Info");
-		
+		//sales
 		VerticalLayout tab3=new VerticalLayout();
-//		tab3.addComponents();
+		HorizontalLayout l6 = new HorizontalLayout();
+		HorizontalLayout l7 = new HorizontalLayout();
+		l6.addComponents(firstname, lastname);
+		l7.addComponents(title, mail);
+		tab3.addComponents(l6, l7);
 		tabsheet.addTab(tab3,"Sales Info");
-		
+		//room
 		VerticalLayout tab4=new VerticalLayout();
-		tab4.addComponents(room_modify);
+		HorizontalLayout l8 = new HorizontalLayout();
+		HorizontalLayout l9 = new HorizontalLayout();
+		HorizontalLayout l10 = new HorizontalLayout();
+		l8.addComponents(st, et); l9.addComponents(exp, gua, act); l10.addComponents(style, room, sec);
+		notes.setSizeFull();
+		tab4.addComponents(l8, l9, l10, notes, room_modify);
 		tabsheet.addTab(tab4,"Room Info");
 		
 		VerticalLayout tab5=new VerticalLayout();
-		tab5.addComponents(treeGrid,itemsform);
+		HorizontalLayout l11 = new HorizontalLayout();
+		l11.addComponents(itemsform, items_modify);
+		tab5.addComponents(treeGrid, l11);
+		l11.setSizeFull();
+		l11.setComponentAlignment(items_modify, Alignment.TOP_RIGHT);
 		tabsheet.addTab(tab5,"Items Info");
 		
 		VerticalLayout tab6=new VerticalLayout();
@@ -175,6 +189,9 @@ public class InfoView extends TopBarView implements View {
 			MyUI.navigateTo("reservation");
 		});
 		//items
+		items_modify.addClickListener(e-> {
+			MyUI.navigateTo("details");
+		});
 		treeGrid.asSingleSelect().addValueChangeListener(e->{
 			if (e.getValue()==null) {
 				itemsform.setVisible(false);
@@ -208,13 +225,74 @@ public class InfoView extends TopBarView implements View {
 		countryb.setValue(service.u.getBcountry());
 		mail.setValue(service.u.getMail());
 		//evt
-		
+		int evtid=(int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("evtid_modify");
+		System.out.println(evtid);
+		evtDataService service2 = new evtDataService(evtid, 0);
+		service2.getData();
+		bookName.setValue(service2.u.getEvtname());
+		postAs.setValue(service2.u.getPostas());
+		bookId.setValue(service2.u.getEvtid());
+		status.setValue(service2.u.getEvtstatus());
+		{
+			String tmpstr = service2.u.getConfdate(); 
+			if (tmpstr.length() >= 10) confirmDt.setValue(tmpstr.substring(0, 10));
+			else confirmDt.setValue(tmpstr);
+		}
+		{
+			String tmpstr = service2.u.getEvtstart(); 
+		    if (tmpstr.length() >= 10) dt.setValue(tmpstr.substring(0, 10)); 
+		    else dt.setValue(tmpstr);
+		}
+		int fid=(int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
+		System.out.println("fid: " + fid);
+		service2 = new evtDataService(fid, 1);
+		service2.getData2();
+		if (service2.u.getFname() != null) funcName.setValue(service2.u.getFname());
+		if (service2.u.getFposas() != null) functPost.setValue(service2.u.getFposas());
+		if (service2.u.getFid() != null) funcId.setValue(service2.u.getFid());
+		//salesman will need it later, because currently there is no sales id
+		/*int spid=(int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("spid_modify");
+		System.out.println("spid: " + spid);
+		spDataService service3 = new spDataService(spid);
+		service3.getData();
+		firstname.setValue(service3.u.getFirstname()); firstname.setWidth("300");
+		lastname.setValue(service3.u.getLastname()); lastname.setWidth("300");
+		title.setValue(service3.u.getTitle()); title.setWidth("300");
+		mail.setValue(service3.u.getEmail());  mail.setWidth("300");*/
+		//room
+		System.out.println("fid: " + fid);
+		funcDataService service4 = new funcDataService(fid, 0);
+		service4.getData();
+		if (service4.u.getStarttime().length() >= 16) st.setValue(service4.u.getStarttime().substring(11, 16)); 
+		if (service4.u.getEndtime().length() >= 16) et.setValue(service4.u.getEndtime().substring(11, 16)); 
+		exp.setValue(service4.u.getExpected()); act.setValue(service4.u.getActual()); gua.setValue(service4.u.getGuaranteed());
+	    service4 = new funcDataService(service4.u.getStyle(), 1);
+		service4.getData2();
+        if (service4.u.getSetupstyle() != null) style.setValue(service4.u.getSetupstyle()); 
+        else style.setValue("T.B.D.");
+		//room.setValue();
+        service4 = new funcDataService(fid, 2);
+        service4.getData3();
+        funcDataService service5 = new funcDataService(fid, 3);
+        service5.getData4();
+        List<String> rooms = new ArrayList<>();
+        for (int i = 0; i < service4.roomsid.size(); i++) {
+        	rooms.add(service5.map.get(service4.roomsid.get(i)));
+        }
+        room.setItems(rooms);
+        if (rooms.size() > 0) room.setSelectedItem(rooms.get(0));
+        //sec.setValue();
+		//notes.setValue();
+        service4 = new funcDataService(fid, 4);
+        service4.getData5();
+        if (service4.u.getSetupstyle() != null) notes.setValue(service4.u.getNotes());
+        else notes.setValue("nothing...");
 		//items
 		itemsform.setVisible(false);
 		 //get related date from db
-		OrderitemsService iservice = new OrderitemsService(); iservice.getData();
+		OrderitemsService iservice = new OrderitemsService(1); iservice.getData();
 		headerService hservice = new headerService(); hservice.getHeader();
-		timeService tservice = new timeService(); tservice.getTime(); 
+		timeService tservice = new timeService(1); tservice.getTime(); 
 		HashMap<Integer, Boolean> mp = new HashMap<Integer, Boolean>(); //id to headerdesc
 		HashMap<Integer, Orderitems> parent = new HashMap<Integer, Orderitems>();
 		 //put data in the new list
@@ -225,7 +303,7 @@ public class InfoView extends TopBarView implements View {
 				String starttime = tservice.stime.get(tmp.getTimeid());
 				String endtime = tservice.etime.get(tmp.getTimeid());
 				String header = hservice.header.get(tmp.getHeaderid());
-				order.add(new Orderitems(header, starttime, endtime));
+				order.add(new Orderitems(tmp.getTimeid(), header, starttime, endtime));
 				parent.put(tmp.getHeaderid(), order.get(order.size()-1));
 			} 
 			order.add(new Orderitems(tmp.getId(), tmp.getHeaderid(), tmp.getItem(), tmp.getQty(), tmp.getCharge(), tmp.getTotal()));

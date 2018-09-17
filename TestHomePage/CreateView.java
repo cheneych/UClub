@@ -45,45 +45,82 @@ import com.vaadin.external.org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 @Theme("mytheme")
 //public class HomeView extends VerticalLayout implements View {
-public class HomeView extends TopBarView implements View {
+public class CreateView extends TopBarView implements View {
 	final transient Logger logger = LoggerFactory.getLogger(HomeView.class);
 	//Components
-	private Button create = new Button("Create a new Reservation");
-	private Button searchPastBookings = new Button("Search past bookings");
+	private Button reserve = new Button("Create");
+	private Button home = new Button("HOME");
+
+	TextField member = new TextField("Customer ID");
 	
 	private StandardGridConfigurator configurator;
 	//global variable
-	Grid<Order> grid = new Grid<Order>(Order.class);
-	public List<Order> orders = new ArrayList<>();
 	
-	public HomeView() {
+	public CreateView() {
 		init();
 	}
 
 	public void init() {
 		eventProcess();
 		dataProcess();
-		final HorizontalLayout layout2 = new HorizontalLayout(); 
-		layout2.addComponents(create, searchPastBookings);
-		addComponent(layout2);
-		
+		final VerticalLayout layout2 = new VerticalLayout(); 
+		final VerticalLayout layout5 = new VerticalLayout(); 
+		layout5.addComponents(member, reserve);
+		layout2.addComponents(home, layout5);
+		addComponents(layout2);
 	}
 
 	private void eventProcess(){
-		searchPastBookings.addClickListener(e->{
-			MyUI.navigateTo("search");
+		home.addClickListener(e->{
+			MyUI.navigateTo("home"); 
+		});        
+
+		reserve.addClickListener(e->{
+			String custid = member.getValue();
+			System.out.println("custid " + custid);
+			if (!custid.equals("")) { 
+				/* 1 check if id exists 
+				   2 create a new event
+				   3 redirect to new page */
+				IsValidCusService service = new IsValidCusService(custid);
+				int count = service.getData();
+				if (count == 1) {
+					//set custid in session
+					VaadinService.getCurrentRequest().getWrappedSession().setAttribute("cur_custid", custid);
+					//insert into evt
+					try {
+						service.storeRow(custid);
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					//if create, then create_or_modify = 0
+					VaadinService.getCurrentRequest().getWrappedSession().setAttribute("create_or_modify", 0);
+					//redirect
+					MyUI.navigateTo("newinfo"); 
+				} else {
+					//pop-up window
+					Notification notif = new Notification("Warning", "Customer does not exist", 
+															Notification.TYPE_WARNING_MESSAGE);
+					notif.setStyleName("mystyle"); //change css of the notif
+					notif.setPosition(Position.MIDDLE_LEFT);
+					notif.show(Page.getCurrent()); 
+				}
+			}
+			else {
+				//for test purpose, need to be deleted later
+				System.out.println("test");
+				MyUI.navigateTo("newinfo"); 
+			}
 		});
 		
-		create.addClickListener(e->{
-			MyUI.navigateTo("create");
-		});
 	}
 
 	private void dataProcess() {
-		
+		member.setPlaceholder("Type Customer ID");
 	}
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
 	}
 }
+

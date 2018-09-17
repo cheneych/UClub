@@ -29,9 +29,11 @@ import raymond.dataprovider.filter.StatementHelper;
 public class timeService  extends DataService<CustInfo>{
 	public HashMap<Integer, String> stime = new HashMap<Integer, String>();
 	public HashMap<Integer, String> etime = new HashMap<Integer, String>();
-	public timeService () {
+	public timeService (int flag) {
 		super(Pools.getConnectionPool(Names.RAYMOND));
-		int fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
+		int fid;
+		if (flag == 1) fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
+		else fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
 		sqlQuery = "SELECT SERVTIMEID, SERVTIME2, SERVENDTIME2 FROM SERVTIME WHERE FUNCTID = " + fid;
 		
 	}

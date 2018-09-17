@@ -156,7 +156,7 @@ public class RoomDataService extends DataService<Room> {
 		return list;
 	}
 
-	public void storeRow(Connection conn, LocalDateTime starttime, LocalDateTime endtime, int id) throws SQLException {
+	public void storeRow(Connection conn, LocalDateTime starttime, LocalDateTime endtime, int id, LocalDateTime date) throws SQLException {
 		int fid = -1;
 		int create_or_modify = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("create_or_modify");
 		if (create_or_modify == 1)
@@ -179,12 +179,24 @@ public class RoomDataService extends DataService<Room> {
 			setString(call, x++, fid);
 			call.executeUpdate();
 		}
+		
+		try (CallableStatement call = conn.prepareCall("{call TEST.evt_start_end_time(?, ?) }")) {
+			int x = 1;
+			int eid;
+			if (create_or_modify == 0)
+			eid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("evtid_create");
+			else eid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("evtid_modify");
+			setTimestamp(call, x++, date);
+			setString(call, x++, eid);
+			System.out.println("date :" + date + " id : " + eid);
+			call.executeUpdate();
+		}
 
 	}
 
-	public Result<Room> storeRow(LocalDateTime starttime, LocalDateTime endtime, int id) throws SQLException {
+	public Result<Room> storeRow(LocalDateTime starttime, LocalDateTime endtime, int id, LocalDateTime date) throws SQLException {
 		try (Connection conn = dataSource.getConnection()) {
-			 storeRow(conn, starttime, endtime, id);
+			 storeRow(conn, starttime, endtime, id, date);
 			conn.commit();
 			//return get(conn, s);
 			return null;

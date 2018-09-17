@@ -98,6 +98,7 @@ public class MoreInfoDataService extends DataService<MoreInfo>{
 			call.executeUpdate();
 			VaadinService.getCurrentRequest().getWrappedSession()
 			 .setAttribute("fid_create",call.getInt(1));
+			System.out.print("look here" + call.getInt(1));
 		}
 	}
 

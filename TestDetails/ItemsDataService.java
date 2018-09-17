@@ -114,10 +114,15 @@ public class ItemsDataService extends DataService<Items> {
 	}
 
 	public void storeRow(Connection conn, List<Items> itemsAll, int subcatid, int catid, int timeid) throws SQLException {
-		int fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
+		int fid;
+		int create_or_modify = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("create_or_modify");
+		if (create_or_modify == 0)
+			fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
+		else 
+			fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
 		System.out.println("here"+" "+itemsAll.size());
 		for (int i=0; i<itemsAll.size(); i++) {
-			try (CallableStatement call = conn.prepareCall("{ call test.add_items(?, ?, ?, ?, ?, ?, ?, ?) }")) {
+			try (CallableStatement call = conn.prepareCall("{ call test.add_items(?, ?, ?, ?, ?, ?, ?, ?, ?) }")) {
 				int x = 1;
 				setString(call, x++, fid);
 				setString(call, x++, catid);
@@ -126,6 +131,7 @@ public class ItemsDataService extends DataService<Items> {
 				setString(call, x++, itemsAll.get(i).getTotal());
 				setString(call, x++, itemsAll.get(i).getQty());
 				setString(call, x++, itemsAll.get(i).getServitemid());
+				setString(call, x++, itemsAll.get(i).getServitemname());
 				setString(call, x++, subcatid);
 				call.executeUpdate();
 			}

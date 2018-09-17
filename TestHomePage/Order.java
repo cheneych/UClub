@@ -13,6 +13,7 @@ public class Order {
 	private int id;
 	private int evtid;
 	private int fid;
+	private int spid;
 	//private String room;
 	//private OrderStatus status;
 	
@@ -30,6 +31,14 @@ public class Order {
 //		this.status=status;
 	}
 	
+	public int getSpid() {
+		return spid;
+	}
+
+	public void setSpid(int spid) {
+		this.spid = spid;
+	}
+
 	public int getEvtid() {
 		return evtid;
 	}

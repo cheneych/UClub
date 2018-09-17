@@ -58,14 +58,13 @@ public class ReservationView extends TopBarView implements View {
 	Button button=new Button("Search Rooms");
 	Button nStep=new Button("Next Step");
 	Button comfirm=new Button("Comfirm");
-	Button more=new Button("Add more Info");
 
 	FormLayout form1=new FormLayout();
 	
 	boolean b=false;
 	int id=-1;
 	
-	LocalDateTime startdatetime, enddatetime;
+	LocalDateTime startdatetime, enddatetime, date;
 	
 	public ArrayList<Room> roomList = new ArrayList<Room>();
 
@@ -83,7 +82,7 @@ public class ReservationView extends TopBarView implements View {
 		final HorizontalLayout layout2=new HorizontalLayout();
 		layout1.addComponents(sDate,eDate);
 		layout4.addComponents(DAT,layout1);
-		layout2.addComponents(form1,more,layout4,nStep);
+		layout2.addComponents(form1,layout4,nStep);
 		layout2.setSizeFull();
 		layout2.setComponentAlignment(nStep, Alignment.MIDDLE_RIGHT);
 		//third layer
@@ -99,6 +98,7 @@ public class ReservationView extends TopBarView implements View {
 	}
 
 	private void dataProcess() {
+		comfirm.setVisible(false);
 		//treegrid
 		treeGrid.setVisible(false);
 		treeGrid.setSizeFull();
@@ -230,12 +230,9 @@ public class ReservationView extends TopBarView implements View {
 	}
 
 	private void eventProcess() {
-		
-		more.addClickListener(e->{
-			MyUI.navigateTo("newinfo");
-		});
 		//search rooms
 		button.addClickListener(e->{
+			comfirm.setVisible(true);
 			if (sDate.getValue().toLocalDate().equals(eDate.getValue().toLocalDate())) {
 				RoomDataService service = new RoomDataService(sDate.getValue().toLocalDate().toString());
 				int pre=-1,id=-1;
@@ -275,7 +272,7 @@ public class ReservationView extends TopBarView implements View {
 				RoomDataService service = new RoomDataService();
 				try {
 					System.out.println("comfirm "+"startdatetime:"+startdatetime+"enddatetime:"+enddatetime+"roomid:"+id);
-					service.storeRow(startdatetime,enddatetime,id-1);
+					service.storeRow(startdatetime, enddatetime, id-1, date);
 					id=-1;
 				} catch (SQLException e1) {
 					e1.printStackTrace();
@@ -297,6 +294,8 @@ public class ReservationView extends TopBarView implements View {
 					int ks=Integer.parseInt(s);
 					String tmpstarttime=sDate.getValue().toLocalDate().toString()+" "+s+":00:00";
 					startdatetime = LocalDateTime.parse(tmpstarttime, formatter);
+					String tmpdatetime = sDate.getValue().toLocalDate().toString()+" "+"00:00:00";
+					date = LocalDateTime.parse(tmpdatetime, formatter);
 					
 					LocalTime te=eDate.getValue().toLocalTime();
 					String s2=te.toString();

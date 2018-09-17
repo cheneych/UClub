@@ -105,7 +105,12 @@ public class CategoryDataService extends DataService<Category> {
 		int timeid = -1;
 		try (CallableStatement call = conn.prepareCall("{? =  call test.add_time(?, ?, ?, ?) }")) {
 			int x = 1;
-			int fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
+			int fid;
+			int create_or_modify = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("create_or_modify");
+			if (create_or_modify == 0)
+				fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
+			else 
+				fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
 			call.registerOutParameter(x++, Types.NUMERIC);
 			setString(call, x++, fid);
 			setString(call, x++, catid);

@@ -14,10 +14,11 @@ public class Orderitems {
 	private String starttime;
 	private String endtime;
 
-	public Orderitems(String service, String starttime, String endtime) {
-		this.service = service;
+	public Orderitems(int timeid, String service, String starttime, String endtime) {
+		this.timeid    = timeid;
+		this.service   = service;
 		this.starttime = starttime;
-		this.endtime = endtime;
+		this.endtime   = endtime;
 	}
 
 	
@@ -53,7 +54,7 @@ public class Orderitems {
 	}
 
 	public String getItem() {
-		return item;
+		return item == null ? "" :item;
 	}
 
 	public void setItem(String item) {

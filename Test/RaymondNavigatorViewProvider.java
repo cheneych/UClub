@@ -12,6 +12,8 @@ import raymond.TestDetails.*;
 import raymond.TestHomePage.*;
 import raymond.TestInfo.InfoView;
 import raymond.TestReserve.*;
+import raymond.report.FinalView;
+import raymond.report.ReportView;
 
 
 @SuppressWarnings("serial")
@@ -52,6 +54,14 @@ public class RaymondNavigatorViewProvider implements ViewProvider {
 			return new InfoView();
 		case "newinfo":
 			return new moreInfoView();
+		case "search":
+			return new SearchView();
+		case "create":
+			return new CreateView();
+		case "report":
+			return new ReportView();
+		case "final":
+			return new FinalView();
 		default:
 			logger.error("Unable to determine view");
 			return null;

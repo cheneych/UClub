@@ -24,7 +24,7 @@ public class OrderDataService extends DataService<Order> {
 		super(Pools.getConnectionPool(Names.RAYMOND));
 		//System.out.println("enter ser");
 		if (attr.equals("date"))
-			sqlQuery = "select functid, event.evtid, evtstart2 as day,custname as customer, evtname as name, custt.custid from"
+			sqlQuery = "select functid, event.evtid, evtstart2 as day,custname as customer, evtname as name, custt.custid, event.spid from"
 					+ "((custt left join event  on custt.custid=event.custid) "
 					+ "left join funct on funct.evtid=event.evtid) "
 					+ "WHERE (to_char(evtstart2,'YYYY-MM-DD'))='"+s+"'";
@@ -33,12 +33,12 @@ public class OrderDataService extends DataService<Order> {
 			if (s.length()>0) {
 				c=s.charAt(0);
 			if (c>='0' && c<='9')
-				sqlQuery = "select functid, event.evtid, evtstart2 as day, custname as customer,evtname as name,custt.custid from "
+				sqlQuery = "select functid, event.evtid, evtstart2 as day, custname as customer,evtname as name,custt.custid, event.spid from "
 						+ "((custt left join event  on custt.custid=event.custid) "
 						+ "left join funct on funct.evtid=event.evtid) "
 						+ "WHERE event.CUSTID="+s;
 			else
-				sqlQuery = "select functid, event.evtid, evtstart2 as day,custname as customer ,evtname as name,custt.custid from "
+				sqlQuery = "select functid, event.evtid, evtstart2 as day,custname as customer ,evtname as name,custt.custid, event.spid from "
 						+ "((custt left join event  on custt.custid=event.custid) "
 						+ "left join funct on funct.evtid=event.evtid) "
 						+ " WHERE CUSTNAME="+"'"+s+"'";
@@ -59,6 +59,7 @@ public class OrderDataService extends DataService<Order> {
 //		u.setEndTime(getLocalTime(rs, i++));
 		u.setEvtName(getString(rs, i++));
 		u.setId(getInteger(rs,i++));
+		u.setSpid(getInteger(rs, i++));
 		//u.setRoom(getString(rs, i++));
 		return u;
 
@@ -117,7 +118,7 @@ public class OrderDataService extends DataService<Order> {
 			int x = 1;
 			call.registerOutParameter(x++, Types.VARCHAR);
 
-			setTimestamp(call, x++, row.getDay());
+			setTimestamp(call, x++, row.getDay()); System.out.println("day: " + row.getDay());
 			setString(call,x++,row.getCustName());
 			setString(call, x++, row.getEvtName());
 

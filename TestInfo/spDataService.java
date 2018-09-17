@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.vaadin.data.Result;
-import com.vaadin.server.VaadinService;
 
 import raymond.TestDB.DataService;
 import raymond.TestDB.Pools;
@@ -22,17 +21,11 @@ import raymond.TestInfo.CustInfo;
 import raymond.TestReserve.Room;
 import raymond.dataprovider.filter.StatementHelper;
 
-public class OrderitemsService  extends DataService<CustInfo>{
-	public ArrayList<Orderitems> order = new ArrayList<Orderitems>();
-	public OrderitemsService (int flag) {
+public class spDataService extends DataService<CustInfo>{
+	SalesInfo u = new SalesInfo();
+	public spDataService(int id) {
 		super(Pools.getConnectionPool(Names.RAYMOND));
-		int fid;
-		if (flag == 1) fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_modify");
-		else fid = (int)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("fid_create");
-		System.out.println(fid);
-		sqlQuery = "SELECT SERVITEMID, HEADERTYPEID, SERVTIMEID, SERVITEMNAME, SERVITEMCHRG, SERVITEMCOST, SERVITEMQTY"
-				+ " FROM SERVITEMS WHERE FUNCTID = "+ fid;
-		
+		sqlQuery = "SELECT FIRSTNAME, LASTNAME, SPTITLE, EMAILACCOUNT, EMAILADDRESS FROM SALPT WHERE SALESID = " + id;
 	}
 	
 	public void getData() {
@@ -41,14 +34,13 @@ public class OrderitemsService  extends DataService<CustInfo>{
 				try (ResultSet rs = stmt.executeQuery()) {
 					while (rs.next()) {
 						int i = 1;
-						int id = getInteger(rs, i++);
-						int headerid = getInteger(rs, i++);
-						int timeid = getInteger(rs, i++);
-						String name = getString (rs, i++);
-						double chrg = Double.parseDouble(getString (rs, i++));
-						double cost = Double.parseDouble(getString (rs, i++));
-						int qty = getInteger(rs, i++);
-						order.add(new Orderitems(id, headerid, timeid, name, chrg, cost, qty));
+						u.setFirstname(getString(rs, i++)+"");
+						u.setLastname(getString(rs,i++)+"");
+						u.setTitle(getString(rs,i++)+"");
+						String s1 = getString(rs, i++) + "";
+						String s2 = getString(rs, i++) + "";
+						if (s1 == null) u.setEmail(s2);
+						else u.setEmail(s1);
 					}
 				}
 			}
