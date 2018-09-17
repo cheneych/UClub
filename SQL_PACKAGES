@@ -63,13 +63,13 @@ END;
 
 
 PROCEDURE add_items (fid in NUMBER, catogory in NUMBER, timeid in NUMBER, unitcost in NUMBER, 
-					 totalcost in NUMBER, qty in NUMBER, itemid in NUMBER, subcatogory in  NUMBER
+					 totalcost in NUMBER, qty in NUMBER, itemid in NUMBER, name IN VARCHAR2, subcatogory in  NUMBER
 					) IS
 BEGIN
 	INSERT INTO servitems (functid, headertypeid, servtimeid, servitemchrg, servitemcost,
-						   servitemqty, itemsetupid, servtype) 
+						   servitemqty, itemsetupid, SERVITEMNAME, servtype) 
 	VALUES                (fid,     catogory,     timeid,     unitcost,     totalcost,
-		                   qty,         itemid,      subcatogory);
+		                   qty,         itemid,     name, subcatogory);
 END;
 
 
@@ -83,5 +83,36 @@ BEGIN
 	RETURN NID;
 END;
 
+PROCEDURE updateItems (itemid in NUMBER, unitcost in NUMBER, totalcost in NUMBER, qty in NUMBER
+					  ) IS
+BEGIN
+	MERGE INTO SERVITEMS A
+	USING (SELECT itemid AS id FROM DUAL) B
+	ON (A.SERVITEMID = B.id)
+	WHEN MATCHED THEN 
+	UPDATE SET 
+	A.SERVITEMCHRG =  unitcost, A.SERVITEMCOST = totalcost,  A.SERVITEMQTY = qty
+	WHEN NOT MATCHED THEN
+	INSERT (A.SERVITEMCHRG, A.SERVITEMCOST, A.SERVITEMQTY) VALUES (unitcost, totalcost, qty);
+END;
+
+PROCEDURE delItems (id in NUMBER, flag IN NUMBER) IS
+BEGIN
+	IF (flag = 0) THEN 
+		DELETE FROM servitems WHERE SERVITEMID = id;
+	 ELSE 
+		DELETE FROM servitems WHERE SERVTIMEID = id;
+	 END IF;
+END;
+
+PROCEDURE evt_start_end_time(datetime IN DATE, id IN NUMBER) IS
+BEGIN
+	MERGE INTO event A
+	USING (SELECT id AS eid FROM dual) B
+	ON (A.evtid = B.eid)
+	WHEN MATCHED THEN
+	UPDATE SET
+	A.evtstart2 = datetime, A.evtend2 = datetime;
+END ;
 
 END TEST;
