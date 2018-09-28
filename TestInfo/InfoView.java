@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.gargoylesoftware.htmlunit.javascript.host.dom.Text;
@@ -109,6 +110,9 @@ public class InfoView extends TopBarView implements View {
 	TreeData<Orderitems> data = dataProvider.getTreeData();
 	Button items_modify = new Button("Add more items");
 	public OrderForm itemsform=new OrderForm(this);
+		//Charges
+	Label tit = new Label("Summaryof Charges");
+	Grid<Money> charges = new Grid<Money>(Money.class);
 	
 	public InfoView()  {
 		init();
@@ -174,7 +178,7 @@ public class InfoView extends TopBarView implements View {
 		tabsheet.addTab(tab5,"Items Info");
 		
 		VerticalLayout tab6=new VerticalLayout();
-//		tab6.addComponents();
+		tab6.addComponents(tit, charges);
 		tabsheet.addTab(tab6,"Charges");
 		addComponent(tabsheet);
 	}
@@ -294,27 +298,39 @@ public class InfoView extends TopBarView implements View {
 		headerService hservice = new headerService(); hservice.getHeader();
 		timeService tservice = new timeService(1); tservice.getTime(); 
 		HashMap<Integer, Boolean> mp = new HashMap<Integer, Boolean>(); //id to headerdesc
-		HashMap<Integer, Orderitems> parent = new HashMap<Integer, Orderitems>();
+		HashMap<String, Orderitems> parent = new HashMap<String, Orderitems>();
+		HashSet<String> servicetime = new HashSet<String>(); 
 		 //put data in the new list
 		for (int i=0; i<iservice.order.size();i++) {
 			Orderitems tmp = iservice.order.get(i);
-			if (!mp.containsKey(tmp.getHeaderid())) { //headerid first appear
-				mp.put(tmp.getHeaderid(), true);
-				String starttime = tservice.stime.get(tmp.getTimeid());
-				String endtime = tservice.etime.get(tmp.getTimeid());
-				String header = hservice.header.get(tmp.getHeaderid());
-				order.add(new Orderitems(tmp.getTimeid(), header, starttime, endtime));
-				parent.put(tmp.getHeaderid(), order.get(order.size()-1));
-			} 
+			String starttime = tservice.stime.get(tmp.getTimeid());
+			String endtime = tservice.etime.get(tmp.getTimeid());
+			String timeheadidcombine = starttime + endtime + tmp.getHeaderid();
+			if (!servicetime.contains(timeheadidcombine)) {
+				if (!mp.containsKey(tmp.getHeaderid())) { //headerid first appear
+					mp.put(tmp.getHeaderid(), true);
+					String header = hservice.header.get(tmp.getHeaderid());
+					order.add(new Orderitems(tmp.getTimeid(), header, null, null));
+					parent.put(timeheadidcombine, order.get(order.size()-1));
+				}
+				servicetime.add(timeheadidcombine);
+				order.add(new Orderitems(tmp.getTimeid(), null, starttime, endtime));
+				parent.put(tmp.getHeaderid().toString(), order.get(order.size()-1));
+			}
 			order.add(new Orderitems(tmp.getId(), tmp.getHeaderid(), tmp.getItem(), tmp.getQty(), tmp.getCharge(), tmp.getTotal()));
 		}
 		 //create tree grid
 		for (int i=0; i<order.size(); i++) {
 			Orderitems tmp = order.get(i);
-			if (tmp.getService() == null) {
+			if (tmp.getService() == null && tmp.getTimeid() == null) {
 				data.addItems(parent.get(tmp.getHeaderid()), tmp);
-			} else {
+			} else if (tmp.getTimeid() == null) {
 				data.addItem(null, tmp);
+			} else {
+				String starttime = tmp.getStarttime();
+				String endtime = tmp.getEndtime();
+				String timeheadidcombine = starttime + endtime + tmp.getHeaderid();
+				data.addItem(parent.get(timeheadidcombine), tmp);
 			}
 		}
 		//set columns of tree grid
@@ -328,6 +344,12 @@ public class InfoView extends TopBarView implements View {
 		//change size and refresh treegrid
 		treeGrid.setSizeFull();
 		dataProvider.refreshAll();
+		//charges
+		charges.setColumns("desc", "charges", "srv_Chg", "other", "st_Tax", "tax2", 
+				   			"tax3", "tax4", "tax5", "sub_Totals");
+		charges.setSizeFull();
+		MoneyDataService moneyservice = new MoneyDataService(fid);
+		charges.setDataProvider(moneyservice.getDataProvider());
 	}
 	
 //	public String filter(Object s) {

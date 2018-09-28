@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.gargoylesoftware.htmlunit.javascript.host.dom.Text;
@@ -82,7 +83,7 @@ public class ReportView extends TopBarView implements View {
 		});
 		
 		next.addClickListener(e-> {
-			MyUI.navigateTo("final");
+			MyUI.navigateTo("charge");
 		});
 	}
 
@@ -94,27 +95,39 @@ public class ReportView extends TopBarView implements View {
 		headerService hservice = new headerService(); hservice.getHeader();
 		timeService tservice = new timeService(flag); tservice.getTime(); 
 		HashMap<Integer, Boolean> mp = new HashMap<Integer, Boolean>(); //id to headerdesc
-		HashMap<Integer, Orderitems> parent = new HashMap<Integer, Orderitems>();
+		HashMap<String, Orderitems> parent = new HashMap<String, Orderitems>();
+		HashSet<String> servicetime = new HashSet<String>(); 
 		 //put data in the new list
 		for (int i=0; i<iservice.order.size();i++) {
 			Orderitems tmp = iservice.order.get(i);
-			if (!mp.containsKey(tmp.getHeaderid())) { //headerid first appear
-				mp.put(tmp.getHeaderid(), true);
-				String starttime = tservice.stime.get(tmp.getTimeid());
-				String endtime = tservice.etime.get(tmp.getTimeid());
-				String header = hservice.header.get(tmp.getHeaderid());
-				order.add(new Orderitems(tmp.getTimeid(), header, starttime, endtime));
-				parent.put(tmp.getHeaderid(), order.get(order.size()-1));
-			} 
+			String starttime = tservice.stime.get(tmp.getTimeid());
+			String endtime = tservice.etime.get(tmp.getTimeid());
+			String timeheadidcombine = starttime + endtime + tmp.getHeaderid();
+			if (!servicetime.contains(timeheadidcombine)) {
+				if (!mp.containsKey(tmp.getHeaderid())) { //headerid first appear
+					mp.put(tmp.getHeaderid(), true);
+					String header = hservice.header.get(tmp.getHeaderid());
+					order.add(new Orderitems(tmp.getTimeid(), header, null, null));
+					parent.put(timeheadidcombine, order.get(order.size()-1));
+				}
+				servicetime.add(timeheadidcombine);
+				order.add(new Orderitems(tmp.getTimeid(), null, starttime, endtime));
+				parent.put(tmp.getHeaderid().toString(), order.get(order.size()-1));
+			}
 			order.add(new Orderitems(tmp.getId(), tmp.getHeaderid(), tmp.getItem(), tmp.getQty(), tmp.getCharge(), tmp.getTotal()));
 		}
 		 //create tree grid
 		for (int i=0; i<order.size(); i++) {
 			Orderitems tmp = order.get(i);
-			if (tmp.getService() == null) {
+			if (tmp.getService() == null && tmp.getTimeid() == null) {
 				data.addItems(parent.get(tmp.getHeaderid()), tmp);
-			} else {
+			} else if (tmp.getTimeid() == null) {
 				data.addItem(null, tmp);
+			} else {
+				String starttime = tmp.getStarttime();
+				String endtime = tmp.getEndtime();
+				String timeheadidcombine = starttime + endtime + tmp.getHeaderid();
+				data.addItem(parent.get(timeheadidcombine), tmp);
 			}
 		}
 		//set columns of tree grid
@@ -127,6 +140,7 @@ public class ReportView extends TopBarView implements View {
 		treeGrid.addColumn(Orderitems::getEndtime).setCaption("End Time");
 		//change size and refresh treegrid
 		treeGrid.setSizeFull();
+		treeGrid.collapse();
 		dataProvider.refreshAll();
 	}
 	

@@ -12,6 +12,7 @@ import raymond.TestDetails.*;
 import raymond.TestHomePage.*;
 import raymond.TestInfo.InfoView;
 import raymond.TestReserve.*;
+import raymond.report.ChargeView;
 import raymond.report.FinalView;
 import raymond.report.ReportView;
 
@@ -62,6 +63,8 @@ public class RaymondNavigatorViewProvider implements ViewProvider {
 			return new ReportView();
 		case "final":
 			return new FinalView();
+		case "charge":
+			return new ChargeView();
 		default:
 			logger.error("Unable to determine view");
 			return null;
