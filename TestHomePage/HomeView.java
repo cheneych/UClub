@@ -50,6 +50,7 @@ public class HomeView extends TopBarView implements View {
 	//Components
 	private Button create = new Button("Create a new Reservation");
 	private Button searchPastBookings = new Button("Search past bookings");
+	private Button settings = new Button("Settings");
 	
 	private StandardGridConfigurator configurator;
 	//global variable
@@ -64,7 +65,7 @@ public class HomeView extends TopBarView implements View {
 		eventProcess();
 		dataProcess();
 		final HorizontalLayout layout2 = new HorizontalLayout(); 
-		layout2.addComponents(create, searchPastBookings);
+		layout2.addComponents(create, searchPastBookings, settings);
 		addComponent(layout2);
 		
 	}
@@ -76,6 +77,10 @@ public class HomeView extends TopBarView implements View {
 		
 		create.addClickListener(e->{
 			MyUI.navigateTo("create");
+		});
+		
+		settings.addClickListener(e->{
+			MyUI.navigateTo("settings");
 		});
 	}
 

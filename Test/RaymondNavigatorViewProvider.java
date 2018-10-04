@@ -15,6 +15,7 @@ import raymond.TestReserve.*;
 import raymond.report.ChargeView;
 import raymond.report.FinalView;
 import raymond.report.ReportView;
+import raymond.report.SettingsView;
 
 
 @SuppressWarnings("serial")
@@ -65,6 +66,8 @@ public class RaymondNavigatorViewProvider implements ViewProvider {
 			return new FinalView();
 		case "charge":
 			return new ChargeView();
+		case "settings":
+			return new SettingsView();
 		default:
 			logger.error("Unable to determine view");
 			return null;

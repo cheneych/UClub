@@ -104,13 +104,23 @@ public class DetailsView extends TopBarView implements View {
 
 		// forth layer
 		final VerticalLayout layout3 = new VerticalLayout();
-		final HorizontalLayout layout5 = new HorizontalLayout();
-		layout5.addComponents(comfirm, form);
+		final HorizontalLayout layout5 = new HorizontalLayout() {
+			{
+				setSpacing(true);
+				setMargin(true);
+				addStyleName("test");
+				addComponents(comfirm);
+				addComponents(form);
+				setComponentAlignment(comfirm, Alignment.TOP_LEFT);
+				setComponentAlignment(form, Alignment.TOP_RIGHT);
+			}
+		};
+//		layout5.addComponents(comfirm, form);
 		layout3.addComponents(finish, itemGrid, layout5);
 		layout3.setComponentAlignment(finish, Alignment.TOP_RIGHT);
 		layout3.setComponentAlignment(itemGrid, Alignment.TOP_RIGHT);
-		layout5.setComponentAlignment(comfirm, Alignment.TOP_LEFT);
-		layout5.setComponentAlignment(form, Alignment.TOP_RIGHT);
+//		layout5.setComponentAlignment(comfirm, Alignment.TOP_LEFT);
+//		layout5.setComponentAlignment(form, Alignment.TOP_RIGHT);
 		final HorizontalLayout layout4 = new HorizontalLayout();
 		layout4.addComponents(grid, itemCBG, layout3);
 		layout4.setSizeFull();

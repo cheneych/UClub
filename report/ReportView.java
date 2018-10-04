@@ -62,7 +62,7 @@ public class ReportView extends TopBarView implements View {
 	public ReportView()  {
 		init();
 	}
-
+    
 	public void init()  {
 		eventProcess();
 		dataProcess();
